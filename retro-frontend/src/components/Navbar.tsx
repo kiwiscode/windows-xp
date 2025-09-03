@@ -55,7 +55,7 @@ const Navbar = () => {
         ref={navRef}
         className={`max-md:w-[70vw] md:w-[400px] h-[80vh] absolute ${
           !showStartBar ? "-left-[403px]" : "left-0"
-        }  bottom-10 rounded-t-md bg-[#245DDA] transition-all duration-300 shadow-2xl border-r-3 border-[#245DDA]`}
+        }  bottom-[32px] rounded-t-md bg-[#245DDA] transition-all duration-300 shadow-2xl border-r-3 border-[#245DDA]`}
       >
         {/* header */}
         <div className="w-full h-[80px] bg-transparent rounded-t-md flex border-b border-[#d18158]">
@@ -78,7 +78,7 @@ const Navbar = () => {
             <div className="mt-auto mb-2 w-full mx-2">
               <div className="border-t border-[#9ec1f6] cursor-pointer">
                 <div
-                  className="flex gap-2 mt-1 items-center hover:bg-[#0B78E3] hover:text-white py-2 px-2 rounded-sm"
+                  className="flex gap-2 mt-1 items-center hover:bg-[#1a6ebf] hover:text-white py-2 px-2 rounded-sm"
                   onClick={shutDown}
                 >
                   <img
@@ -96,18 +96,34 @@ const Navbar = () => {
       </nav>
 
       <nav
-        className={`fixed w-full h-[40px] bg-[#245DDA] ${
+        className={`fixed w-full h-[35px] bg-[#245DDA] ${
           isShuttingDown ? "-bottom-[40px]" : "bottom-0"
         } right-0 left-0 transition-all duration-300`}
         style={{
-          boxShadow: `
-          inset 0 8px 12px -8px #233357,   /* üst gölge */
-        `,
+          boxShadow: "inset 0 8px 12px -8px #233357", // üst gölge
+          background: `linear-gradient(
+      rgb(31, 47, 134) 0px,
+      rgb(49, 101, 196) 3%,
+      rgb(54, 130, 229) 6%,
+      rgb(68, 144, 230) 10%,
+      rgb(56, 131, 229) 12%,
+      rgb(43, 113, 224) 15%,
+      rgb(38, 99, 218) 18%,
+      rgb(35, 91, 214) 20%,
+      rgb(34, 88, 213) 23%,
+      rgb(33, 87, 214) 38%,
+      rgb(36, 93, 219) 54%,
+      rgb(37, 98, 223) 86%,
+      rgb(36, 95, 220) 89%,
+      rgb(33, 88, 212) 92%,
+      rgb(29, 78, 192) 95%,
+      rgb(25, 65, 165) 98%
+    )`,
         }}
       >
         <div
           ref={startBtnRef}
-          className="cursor-pointer rounded-md w-[155px] h-[42px] transition-colors duration-300 flex items-center justify-center"
+          className="cursor-pointer w-[120px] h-[35px] outline-0"
           onClick={() => setShowStartBar(!showStartBar)}
         >
           <img
