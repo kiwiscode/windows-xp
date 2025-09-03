@@ -8,10 +8,21 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@font-face {
+  font-family: "Xp-font";
+  src: url("./assets/fonts/Tahoma-V1.woff") format("truetype");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Xp-font";
+  src: url("./assets/fonts/Tahoma-Bold-V1.woff") format("truetype");
+  font-weight: 700;
+}
+
 body {
   margin: 0;
-  font-family: "Lucida Console", "Lucida Sans Typewriter", monaco,
-    "Bitstream Vera Sans Mono", monospace;
+  font-family: "Xp-font", sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));

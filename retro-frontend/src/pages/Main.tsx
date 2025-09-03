@@ -20,43 +20,43 @@ const Main = () => {
       id: 1,
       title: "Internet Explorer",
       icon: "/desktop-icons/internet-explorer.ico",
-      x: 15,
+      x: 10,
       y: 15,
     },
     {
       id: 2,
       title: "My Computer",
       icon: "/desktop-icons/this-pc.ico",
-      x: 15,
-      y: 135,
+      x: 10,
+      y: 115,
     },
     {
       id: 3,
       title: "Recycle Bin",
       icon: "/desktop-icons/recycle-bin.ico",
-      x: 15,
-      y: 245,
+      x: 10,
+      y: 215,
     },
     {
       id: 4,
       title: "Gta Vice City",
       icon: "/desktop-icons/vice-city.png",
-      x: 15,
-      y: 355,
+      x: 10,
+      y: 315,
     },
     {
       id: 5,
       title: "Messenger",
       icon: "/desktop-icons/messenger.png",
-      x: 15,
-      y: 475,
+      x: 10,
+      y: 415,
     },
     {
       id: 6,
       title: "WINAMP",
       icon: "/desktop-icons/Winamp-logo.png",
-      x: 15,
-      y: 585,
+      x: 10,
+      y: 515,
     },
   ];
 
@@ -65,43 +65,43 @@ const Main = () => {
       id: 1,
       title: "Internet Explorer",
       icon: "/desktop-icons/internet-explorer.ico",
-      x: 15,
+      x: 10,
       y: 15,
     },
     {
       id: 2,
       title: "My Computer",
       icon: "/desktop-icons/this-pc.ico",
-      x: 15,
-      y: 135,
+      x: 10,
+      y: 115,
     },
     {
       id: 3,
       title: "Recycle Bin",
       icon: "/desktop-icons/recycle-bin.ico",
-      x: 15,
-      y: 245,
+      x: 10,
+      y: 215,
     },
     {
       id: 4,
       title: "Gta Vice City",
       icon: "/desktop-icons/vice-city.png",
-      x: 15,
-      y: 355,
+      x: 10,
+      y: 315,
     },
     {
       id: 5,
       title: "Messenger",
       icon: "/desktop-icons/messenger.png",
-      x: 15,
-      y: 475,
+      x: 10,
+      y: 415,
     },
     {
       id: 6,
       title: "WINAMP",
       icon: "/desktop-icons/Winamp-logo.png",
-      x: 15,
-      y: 585,
+      x: 10,
+      y: 515,
     },
   ]);
 
@@ -246,7 +246,7 @@ const Main = () => {
         >
           <img src={app.icon} alt={app.title} className="w-13 h-13 mb-1" />
           <span
-            className={`text-white px-1 text-sm text-center flex ${
+            className={`text-white px-1 text-[12px] text-center flex ${
               clickedAppId === app.id ? "bg-[#0d61ff]" : ""
             }`}
           >
