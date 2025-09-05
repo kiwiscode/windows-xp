@@ -74,7 +74,6 @@ const Main = () => {
 
   const menuRef = useRef<HTMLDivElement>(null);
   const recycleBinSoundRef = useRef<HTMLAudioElement>(null);
-  const folderOpenSoundRef = useRef<HTMLAudioElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -186,9 +185,6 @@ const Main = () => {
       {apps.map((app) => (
         <div
           onDoubleClick={() => {
-            if (folderOpenSoundRef.current) {
-              folderOpenSoundRef.current.play();
-            }
             setClickedAppId(null);
             setActiveTab(app.id);
           }}
@@ -337,7 +333,6 @@ const Main = () => {
         ref={recycleBinSoundRef}
         src="/sounds/windows-xp-recycle-bin.mp3"
       />
-      <audio ref={folderOpenSoundRef} src="/sounds/folder-open.mp3" />
     </div>
   );
 };
