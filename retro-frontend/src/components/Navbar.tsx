@@ -1,18 +1,32 @@
 import { useEffect, useRef, useState } from "react";
 import { UserRound } from "lucide-react";
 import ShutDownScreen from "./ShutDownScreen";
+import { useApp } from "../context/AppContext";
 
-const Navbar = () => {
+interface NavbarProps {
+  tabRefs: React.RefObject<(HTMLDivElement | null)[]>;
+  setTabRef: (index: number, el: HTMLDivElement | null) => void;
+}
+
+const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
   const [isShuttingDown, setIsShuttingDown] = useState<boolean>(false);
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
   const [showShutDownScreen, setShowShutDownScreen] = useState<boolean>(false);
+
+  const {
+    openedTabs,
+    activeTab,
+    fromNavbar,
+    setActiveTab,
+    minimizeTab,
+    setOpenedTabs,
+  } = useApp();
 
   const soundRef = useRef<HTMLAudioElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLDivElement>(null);
 
   const shutDown = () => {
-    console.log("Shut down clicked!");
     setShowStartBar(!showStartBar);
     setIsShuttingDown(true);
 
@@ -48,17 +62,63 @@ const Navbar = () => {
     };
   }, [showStartBar]);
 
+  useEffect(() => {
+    tabRefs.current.forEach((tab, index) => {
+      if (tab) {
+        const rect = tab.getBoundingClientRect();
+        console.log(
+          `Tab ${index} position:`,
+          rect.x,
+          rect.y,
+          rect.width,
+          rect.height
+        );
+      }
+    });
+  }, [openedTabs]);
+
   return (
     <>
       {showShutDownScreen && <ShutDownScreen />}
       <nav
         ref={navRef}
-        className={`max-md:w-[70vw] md:w-[400px] h-[80vh] absolute ${
+        className={`z-20 max-md:w-[50vw] md:w-[400px] h-[80vh] absolute ${
           !showStartBar ? "-left-[403px]" : "left-0"
-        }  bottom-[32px] rounded-t-md bg-[#245DDA] transition-all duration-300 shadow-2xl border-r-3 border-[#245DDA]`}
+        }  bottom-[30px] rounded-t-md transition-all duration-300 shadow-2xl border-r-3 border-[#245DDA]`}
+        style={{
+          backgroundColor: "rgb(66, 130, 214)",
+        }}
       >
         {/* header */}
-        <div className="w-full h-[80px] bg-transparent rounded-t-md flex border-b border-[#d18158]">
+        <div
+          className="w-full h-[80px] bg-transparent rounded-t-md flex relative"
+          style={{
+            background: `linear-gradient(
+      0deg,
+      rgb(24, 104, 206) 0%,
+      rgb(14, 96, 203) 12%,
+      rgb(14, 96, 203) 20%,
+      rgb(17, 100, 207) 32%,
+      rgb(22, 103, 207) 33%,
+      rgb(27, 108, 211) 47%,
+      rgb(30, 112, 217) 54%,
+      rgb(36, 118, 220) 60%,
+      rgb(41, 122, 224) 65%,
+      rgb(52, 130, 227) 77%,
+      rgb(55, 134, 229) 79%,
+      rgb(66, 142, 233) 90%,
+      rgb(71, 145, 235) 100%
+    )`,
+          }}
+        >
+          <div
+            className="h-[4px] w-full absolute bottom-0"
+            style={{
+              background:
+                "linear-gradient(to right, transparent 10%, orange 50%, transparent 100%)",
+            }}
+          ></div>
+
           <div className="ml-2 flex items-center gap-4">
             <div className="w-[60px] h-[60px] bg-[#666666] rounded-sm border flex items-center justify-center">
               <UserRound color="white" size={26} />
@@ -96,6 +156,9 @@ const Navbar = () => {
       </nav>
 
       <nav
+        onClick={() => {
+          fromNavbar(false);
+        }}
         className={`fixed w-full h-[35px] bg-[#245DDA] ${
           isShuttingDown ? "-bottom-[40px]" : "bottom-0"
         } right-0 left-0 transition-all duration-300`}
@@ -121,16 +184,68 @@ const Navbar = () => {
     )`,
         }}
       >
-        <div
-          ref={startBtnRef}
-          className="cursor-pointer w-[120px] h-[35px] outline-0"
-          onClick={() => setShowStartBar(!showStartBar)}
-        >
-          <img
-            src="/navbar-icons/xp-start-btn.png"
-            alt=""
-            className="object-cover w-full h-full"
-          />
+        <div className="flex">
+          <div
+            ref={startBtnRef}
+            className="cursor-pointer w-[120px] h-[35px] outline-0"
+            onClick={() => setShowStartBar(!showStartBar)}
+          >
+            <img
+              src="/navbar-icons/xp-start-btn.png"
+              alt=""
+              className="object-cover w-full h-full"
+            />
+          </div>
+          <div className="flex justify-start items-center w-[80%] h-[35px]">
+            {openedTabs
+              .filter((tab) => tab.prompt !== true)
+              .map((t, i) => (
+                <div
+                  ref={(el) => setTabRef(i, el)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    fromNavbar(true);
+                    console.log("works");
+                    if (activeTab === t.id) {
+                      minimizeTab(t.id);
+                    } else {
+                      setActiveTab(t.id);
+                      setOpenedTabs((prev) =>
+                        prev.map((tab) =>
+                          tab.id === t.id ? { ...tab, minimized: false } : tab
+                        )
+                      );
+                    }
+                  }}
+                  className={`
+                    overflow-ellipsis relative flex items-center mt-[2px] mb-[1px]  max-w-[200px] h-[30px] cursor-default rounded-[2px] overflow-hidden whitespace-nowrap active:shadow_[box-shadow: rgb(0 0 0 / 20%) 0px 0px 1px 1px inset,
+    rgb(0 0 0 / 70%) 1px 0px 1px inset] hover:brightness-[120%]
+                    `}
+                  style={{
+                    flex: "2 2 0%",
+                    backgroundColor:
+                      t.id === activeTab
+                        ? "rgb(30, 82, 183)"
+                        : "rgb(60, 129, 243)",
+                    boxShadow:
+                      t.id === activeTab
+                        ? `rgb(0 0 0 / 20%) 0px 0px 1px 1px inset, rgb(0 0 0 / 70%) 1px 0px 1px inset`
+                        : `rgb(0 0 0 / 30%) -1px 0px inset, rgb(255 255 255 / 20%) 1px 1px 1px inset`,
+                  }}
+                >
+                  <img
+                    width={20}
+                    height={20}
+                    alt="icon"
+                    className="mx-[10px]"
+                    src={t.icon}
+                  />
+                  <div className="text-white text-[14px] whitespace-nowrap overflow-hidden text-ellipsis">
+                    {t.title}
+                  </div>
+                </div>
+              ))}
+          </div>
         </div>
       </nav>
 
