@@ -39,7 +39,7 @@ function App() {
   }, [openedTabs]);
 
   return (
-    <div className="App">
+    <div className="relative">
       <BlueScreen show={false} />
       <Routes>
         <Route path="/" element={<Main />} />

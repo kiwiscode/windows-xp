@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.1.12",
+    "butterchurn": "^3.0.0-beta.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-react": "^0.542.0",
@@ -20,6 +21,7 @@
     "react-router-dom": "^7.8.2",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.12",
+    "webamp": "^2.2.0",
     "xp.css": "^0.2.6"
   },
   "devDependencies": {

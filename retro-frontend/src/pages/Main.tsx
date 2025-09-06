@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
 import type { AppItem } from "../types/AppItem";
+import Winamp from "../components/Webamp";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
@@ -332,6 +333,11 @@ const Main = () => {
       <audio
         ref={recycleBinSoundRef}
         src="/sounds/windows-xp-recycle-bin.mp3"
+      />
+
+      <Winamp
+        onClose={() => console.log("close winamp")}
+        onMinimize={() => console.log("minimize winamp")}
       />
     </div>
   );

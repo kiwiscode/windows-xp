@@ -243,3 +243,22 @@ body {
 .back-enabled:hover > .button_line {
   background-color: #c2c2b7;
 }
+
+#main-window,
+#equalizer-window,
+#playlist-window {
+  box-shadow: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+}
+
+#webamp .equalizer-top {
+  border: 0;
+  padding: 0;
+}
+
+.gen-window {
+  border: 0 !important;
+  padding: 0 !important;
+}
