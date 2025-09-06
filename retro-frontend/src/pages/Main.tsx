@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
 import type { AppItem } from "../types/AppItem";
 import Winamp from "../components/Webamp";
+import { initialApps } from "../data/initialApps";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
@@ -18,54 +19,9 @@ const Main = () => {
     emptyBin,
     apps,
     setApps,
-    setActiveTab,
+    setActiveApp,
     fromNavbar,
   } = useApp();
-
-  const initialApps: AppItem[] = [
-    {
-      id: 1,
-      title: "Internet Explorer",
-      icon: "/desktop-icons/internet-explorer.ico",
-      x: 0,
-      y: 60,
-    },
-    {
-      id: 2,
-      title: "My Computer",
-      icon: "/desktop-icons/this-pc.ico",
-      x: 0,
-      y: 160,
-    },
-    {
-      id: 3,
-      title: "Recycle Bin",
-      icon: "/desktop-icons/recycle-bin.ico",
-      x: 0,
-      y: 260,
-    },
-    {
-      id: 4,
-      title: "Gta Vice City",
-      icon: "/desktop-icons/vice-city.png",
-      x: 0,
-      y: 360,
-    },
-    {
-      id: 5,
-      title: "Messenger",
-      icon: "/desktop-icons/messenger.png",
-      x: 0,
-      y: 460,
-    },
-    {
-      id: 6,
-      title: "WINAMP",
-      icon: "/desktop-icons/Winamp-logo.png",
-      x: 0,
-      y: 560,
-    },
-  ];
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
 
@@ -77,7 +33,7 @@ const Main = () => {
 
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
 
-  const [selectedAppId, setSelectedAppId] = useState<number | null>(null);
+  const [selectedAppTitle, setSelectedAppTitle] = useState<string | null>(null);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const recycleBinSoundRef = useRef<HTMLAudioElement>(null);
@@ -132,14 +88,14 @@ const Main = () => {
   };
 
   // Sağ tık menüsü
-  const handleContextMenu = (e: React.MouseEvent, appId: number | null) => {
+  const handleContextMenu = (e: React.MouseEvent, appTitle: string | null) => {
     e.preventDefault();
     setMenuVisible(true);
     setMenuX(e.clientX);
     setMenuY(e.clientY);
 
-    if (appId) {
-      setSelectedAppId(appId);
+    if (appTitle) {
+      setSelectedAppTitle(appTitle);
     }
   };
 
@@ -150,33 +106,33 @@ const Main = () => {
   };
 
   const handleRename = () => {
-    if (selectedAppId !== null) {
+    if (selectedAppTitle !== null) {
       const newName = prompt("Enter new name:");
       if (newName) {
         setApps((prev) =>
           prev.map((app) =>
-            app.id === selectedAppId ? { ...app, title: newName } : app
+            app.title === selectedAppTitle ? { ...app, title: newName } : app
           )
         );
       }
     }
     setMenuVisible(false);
-    setSelectedAppId(null);
+    setSelectedAppTitle(null);
   };
 
   const handleMoveToBin = () => {
-    if (selectedAppId !== null) {
-      const movedApp = apps.find((app) => app.id === selectedAppId);
+    if (selectedAppTitle !== null) {
+      const movedApp = apps.find((app) => app.title === selectedAppTitle);
       if (movedApp) {
         if (recycleBinSoundRef.current) {
           recycleBinSoundRef.current.play();
         }
         setRecycled((prev: AppItem[]) => [...prev, movedApp]);
-        setApps((prev) => prev.filter((app) => app.id !== selectedAppId));
+        setApps((prev) => prev.filter((app) => app.title !== selectedAppTitle));
       }
     }
     setMenuVisible(false);
-    setSelectedAppId(null);
+    setSelectedAppTitle(null);
   };
 
   return (
@@ -193,12 +149,12 @@ const Main = () => {
         <div
           onDoubleClick={() => {
             setClickedAppId(null);
-            setActiveTab(app.id);
+            setActiveApp(app.title);
             if (app.id === 6) {
               setShowMinamp(true);
             }
           }}
-          onContextMenu={(e) => handleContextMenu(e, app.id)}
+          onContextMenu={(e) => handleContextMenu(e, app.title)}
           key={app.id}
           className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
           style={{
@@ -228,7 +184,7 @@ const Main = () => {
       ))}
 
       <div className="bg-black" ref={menuRef}>
-        {menuVisible && !selectedAppId ? (
+        {menuVisible && !selectedAppTitle ? (
           <div
             className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
             style={{
@@ -292,7 +248,7 @@ const Main = () => {
               <div className="bg-[#f2f2f2] h-[2px] w-[95%] mx-auto"></div>
             </ul>
           </div>
-        ) : menuVisible && selectedAppId ? (
+        ) : menuVisible && selectedAppTitle ? (
           <div
             className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
             style={{
@@ -308,7 +264,7 @@ const Main = () => {
               >
                 Rename
               </li>
-              {selectedAppId !== 3 ? (
+              {selectedAppTitle !== "Recycle Bin" ? (
                 <li
                   className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
                   onClick={handleMoveToBin}
@@ -326,7 +282,7 @@ const Main = () => {
                         }
                         emptyBin();
                         setMenuVisible(false);
-                        setSelectedAppId(null);
+                        setSelectedAppTitle(null);
                       }}
                     >
                       Empty bin

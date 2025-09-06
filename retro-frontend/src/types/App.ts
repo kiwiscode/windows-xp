@@ -1,6 +1,6 @@
 import type React from "react";
 
-export type Tab = {
+export type App = {
   id: number;
   title: string;
   icon: string;

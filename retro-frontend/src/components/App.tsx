@@ -1,18 +1,18 @@
 import TabNavbar from "./TabNavbar";
-import type { Tab as TabType } from "../types/Tab";
+import type { App as AppType } from "../types/App";
 import { useApp } from "../context/AppContext";
 import { useEffect, useRef, useState } from "react";
 
 const unfocusedAdjustment = "brightness(1.05)";
-const Tab = (props: TabType) => {
+const OpenedApp = (props: AppType) => {
   const {
     minimizeTab,
     maximizeTab,
     closeTab,
-    activeTab,
-    setActiveTab,
-    openedTabs,
-    setOpenedTabs,
+    activeApp,
+    setActiveApp,
+    openedApps,
+    setOpenedApps,
     isTabDragging,
     setIsTabDragging,
     isNavbarTabClicked,
@@ -25,11 +25,11 @@ const Tab = (props: TabType) => {
     e.preventDefault();
     setIsTabDragging(true);
 
-    const isTabExist = openedTabs.find((t) => t.id === id);
+    const isTabExist = openedApps.find((t) => t.id === id);
     if (!isTabExist) return;
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
-      setOpenedTabs((prev) =>
+      setOpenedApps((prev) =>
         prev.map((t) =>
           t.id === id
             ? {
@@ -62,7 +62,7 @@ const Tab = (props: TabType) => {
 
       const target = event.target as Node;
       if (tabRef.current && !tabRef.current.contains(target)) {
-        setActiveTab(null);
+        setActiveApp(null);
       }
     };
 
@@ -71,14 +71,14 @@ const Tab = (props: TabType) => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [activeTab]);
+  }, [activeApp]);
 
   return (
     <div
       ref={tabRef}
       onMouseDown={(e) => {
         e.stopPropagation();
-        setActiveTab(props.id);
+        setActiveApp(props.title);
       }}
       className="absolute"
       style={{
@@ -92,7 +92,7 @@ const Tab = (props: TabType) => {
 
         height: props.maximize ? "90%" : "50vh",
 
-        zIndex: activeTab === props.id ? 11 : props.zIndex,
+        zIndex: activeApp === props.title ? 11 : props.zIndex,
         transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
       }}
     >
@@ -102,7 +102,7 @@ const Tab = (props: TabType) => {
         }}
         onDoubleClick={(e) => {
           e.stopPropagation();
-          maximizeTab(props.id);
+          maximizeTab(props.title);
         }}
         className={
           "h-[35px]  rounded-tr-[8px] rounded-tl-[8px] bg-[#5c5c5c] text-white flex items-center justify-between z-10"
@@ -110,7 +110,7 @@ const Tab = (props: TabType) => {
         style={{
           pointerEvents: "auto",
           background:
-            activeTab == props.id
+            activeApp == props.title
               ? `
                 linear-gradient(
     rgb(0, 88, 238) 0%,
@@ -177,27 +177,27 @@ const Tab = (props: TabType) => {
             <div
               onClick={() => {
                 setIsMinimizing(true);
-                minimizeTab(props.id);
+                minimizeTab(props.title);
               }}
               style={{
-                filter: activeTab == props.id ? "" : unfocusedAdjustment,
+                filter: activeApp == props.title ? "" : unfocusedAdjustment,
               }}
               className="tab-minimise"
             />
           )}
           {!props.prompt && (
             <div
-              onClick={() => maximizeTab(props.id)}
+              onClick={() => maximizeTab(props.title)}
               style={{
-                filter: activeTab == props.id ? "" : unfocusedAdjustment,
+                filter: activeApp == props.title ? "" : unfocusedAdjustment,
               }}
               className={props.maximize ? "tab-resize" : "tab-maximise"}
             />
           )}
           <div
-            onClick={() => closeTab(props.id)}
+            onClick={() => closeTab(props.title)}
             style={{
-              filter: activeTab == props.id ? "" : unfocusedAdjustment,
+              filter: activeApp == props.title ? "" : unfocusedAdjustment,
             }}
             className="tab-close"
           />
@@ -208,7 +208,7 @@ const Tab = (props: TabType) => {
         className="flex px-[4px] pb-[4px] h-full transition-all duration-300"
         style={{
           backgroundColor:
-            activeTab == props.id ? "rgb(8, 49, 217)" : "rgb(117, 135, 221)",
+            activeApp == props.title ? "rgb(8, 49, 217)" : "rgb(117, 135, 221)",
         }}
       >
         <div className="flex flex-col bg-white h-full w-full">
@@ -225,4 +225,4 @@ const Tab = (props: TabType) => {
     </div>
   );
 };
-export default Tab;
+export default OpenedApp;

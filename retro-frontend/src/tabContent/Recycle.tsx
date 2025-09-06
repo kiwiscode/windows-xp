@@ -7,10 +7,10 @@ const Recycle = () => {
   const [showUndoRecycleWindow, setShowUndoRecycleWindow] =
     useState<boolean>(false);
 
-  const [clickedAppId, setClickedAppId] = useState<number>(0);
+  const [clickedAppTitle, setClickedAppTitle] = useState<string | null>(null);
 
-  const handleAppClick = (id: number) => {
-    setClickedAppId(id);
+  const handleAppClick = (appTitle: string) => {
+    setClickedAppTitle(appTitle);
   };
   return (
     <>
@@ -23,7 +23,7 @@ const Recycle = () => {
               <button
                 onClick={() => {
                   setShowUndoRecycleWindow(false);
-                  restoreApp(clickedAppId);
+                  restoreApp(clickedAppTitle);
                 }}
               >
                 Restore
@@ -31,7 +31,7 @@ const Recycle = () => {
               <button
                 onClick={() => {
                   setShowUndoRecycleWindow(false);
-                  deletePermanent(clickedAppId);
+                  deletePermanent(clickedAppTitle);
                 }}
               >
                 Delete
@@ -53,7 +53,7 @@ const Recycle = () => {
               key={i.id}
               className={`flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
               onMouseDown={() => {
-                handleAppClick(i.id);
+                handleAppClick(i.title);
               }}
               onClick={(e) => {
                 e.stopPropagation();
@@ -62,7 +62,7 @@ const Recycle = () => {
               <img src={i.icon} alt={i.title} className="w-13 h-13 mb-1" />
               <span
                 className={`text-black px-1 text-[12px] text-center flex ${
-                  clickedAppId === i.id ? "bg-[#0d61ff] text-white" : ""
+                  clickedAppTitle === i.title ? "bg-[#0d61ff] text-white" : ""
                 }`}
               >
                 {i.title}

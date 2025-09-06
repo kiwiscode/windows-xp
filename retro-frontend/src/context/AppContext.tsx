@@ -6,26 +6,27 @@ import React, {
   type ReactNode,
 } from "react";
 import type { AppItem } from "../types/AppItem";
-import type { Tab } from "../types/Tab";
+import type { App as AppType } from "../types/App";
 import Recycle from "../tabContent/Recycle";
 import MyComputer from "../tabContent/MyComputer";
 import useWindowDimensions from "../hooks/useWindowDimensions";
+import { initialApps } from "../data/initialApps";
 
 interface AppContextType {
   recycled: AppItem[];
   setRecycled: React.Dispatch<React.SetStateAction<AppItem[]>>;
   apps: AppItem[];
   setApps: React.Dispatch<React.SetStateAction<AppItem[]>>;
-  activeTab: number | null;
-  setActiveTab: React.Dispatch<React.SetStateAction<number | null>>;
-  openedTabs: Tab[];
-  setOpenedTabs: React.Dispatch<React.SetStateAction<Tab[]>>;
+  activeApp: string | null;
+  setActiveApp: React.Dispatch<React.SetStateAction<string | null>>;
+  openedApps: AppType[];
+  setOpenedApps: React.Dispatch<React.SetStateAction<AppType[]>>;
   emptyBin: () => void;
-  deletePermanent: (selectedAppId: number) => void;
-  restoreApp: (selectedAppId: number) => void;
-  minimizeTab: (tabId: number) => void;
-  maximizeTab: (tabId: number) => void;
-  closeTab: (tabId: number) => void;
+  deletePermanent: (appTitle: string | null) => void;
+  restoreApp: (appTitle: string | null) => void;
+  minimizeTab: (appTitle: string | null) => void;
+  maximizeTab: (appTitle: string | null) => void;
+  closeTab: (appTitle: string | null) => void;
   isTabDragging: boolean;
   setIsTabDragging: React.Dispatch<React.SetStateAction<boolean>>;
   fromNavbar: (param: boolean) => void;
@@ -36,58 +37,13 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
-const initialApps: AppItem[] = [
-  {
-    id: 1,
-    title: "Internet Explorer",
-    icon: "/desktop-icons/internet-explorer.ico",
-    x: 0,
-    y: 60,
-  },
-  {
-    id: 2,
-    title: "My Computer",
-    icon: "/desktop-icons/this-pc.ico",
-    x: 0,
-    y: 160,
-  },
-  {
-    id: 3,
-    title: "Recycle Bin",
-    icon: "/desktop-icons/recycle-bin.ico",
-    x: 0,
-    y: 260,
-  },
-  {
-    id: 4,
-    title: "Gta Vice City",
-    icon: "/desktop-icons/vice-city.png",
-    x: 0,
-    y: 360,
-  },
-  {
-    id: 5,
-    title: "Messenger",
-    icon: "/desktop-icons/messenger.png",
-    x: 0,
-    y: 460,
-  },
-  {
-    id: 6,
-    title: "WINAMP",
-    icon: "/desktop-icons/Winamp-logo.png",
-    x: 0,
-    y: 560,
-  },
-];
-
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [apps, setApps] = useState<AppItem[]>(initialApps);
   const [recycled, setRecycled] = useState<AppItem[]>([]);
-  const [activeTab, setActiveTab] = useState<number | null>(null);
-  const [openedTabs, setOpenedTabs] = useState<Tab[]>([]);
+  const [activeApp, setActiveApp] = useState<string | null>(null);
+  const [openedApps, setOpenedApps] = useState<AppType[]>([]);
   const [isNavbarTabClicked, setIsNavbarTabClicked] = useState<boolean>(false);
 
   const [isTabDragging, setIsTabDragging] = useState<boolean>(false);
@@ -98,55 +54,57 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setRecycled([]);
   };
 
-  const deletePermanent = (selectedAppId: number): void => {
-    setApps((prev) => prev.filter((app) => app.id !== selectedAppId));
-    setRecycled((prev) => prev.filter((app) => app.id !== selectedAppId));
+  const deletePermanent = (appTitle: string | null): void => {
+    setApps((prev) => prev.filter((app) => app.title !== appTitle));
+    setRecycled((prev) => prev.filter((app) => app.title !== appTitle));
   };
 
-  const restoreApp = (selectedAppId: number): void => {
-    const appToRestore = recycled.find((app) => app.id === selectedAppId);
+  const restoreApp = (appTitle: string | null): void => {
+    const appToRestore = recycled.find((app) => app.title === appTitle);
     if (appToRestore) {
       setApps((prev) => [...prev, appToRestore]);
-      setRecycled((prev) => prev.filter((app) => app.id !== selectedAppId));
+      setRecycled((prev) => prev.filter((app) => app.title !== appTitle));
     }
   };
 
-  const minimizeTab = (tabId: number) => {
-    setOpenedTabs((prev) =>
-      prev.map((tab) => (tab.id === tabId ? { ...tab, minimized: true } : tab))
+  const minimizeTab = (appTitle: string | null) => {
+    setOpenedApps((prev) =>
+      prev.map((app) =>
+        app.title === appTitle ? { ...app, minimized: true } : app
+      )
     );
-    if (activeTab === tabId) {
-      setActiveTab(null);
+    if (activeApp === appTitle) {
+      setActiveApp(null);
     }
   };
 
-  const maximizeTab = (tabId: number) => {
-    setOpenedTabs((prev) =>
-      prev.map((tab) =>
-        tab.id === tabId
+  const maximizeTab = (appTitle: string | null) => {
+    setOpenedApps((prev) =>
+      prev.map((app) =>
+        app.title === appTitle
           ? {
-              ...tab,
-              maximize: !tab.maximize,
+              ...app,
+              maximize: !app.maximize,
               x: width / 2,
               y: height * 0.4,
               minimized: false,
             }
-          : tab
+          : app
       )
     );
   };
 
-  const closeTab = (tabId: number) => {
-    setOpenedTabs((prev) => prev.filter((tab) => tab.id !== tabId));
+  const closeTab = (appTitle: string | null) => {
+    setOpenedApps((prev) => prev.filter((app) => app.title !== appTitle));
 
-    if (activeTab === tabId) {
-      setActiveTab(null);
+    if (activeApp === appTitle) {
+      setActiveApp(null);
     }
   };
 
   useEffect(() => {
-    if (activeTab === 2) {
-      setOpenedTabs((prev) => {
+    if (activeApp === "My Computer") {
+      setOpenedApps((prev) => {
         const exists = prev.some((tab) => tab.id === 2);
         if (exists) return prev;
 
@@ -169,8 +127,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       });
     }
 
-    if (activeTab === 3) {
-      setOpenedTabs((prev) => {
+    if (activeApp === "Recycle Bin") {
+      setOpenedApps((prev) => {
         const exists = prev.some((tab) => tab.id === 3);
         if (exists) return prev;
 
@@ -192,21 +150,21 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         ];
       });
     }
-  }, [activeTab, width, height]);
+  }, [activeApp, width, height]);
 
-  console.log("active tab:", activeTab);
+  console.log("active app:", activeApp);
 
   useEffect(() => {
-    if (activeTab == null || isTabDragging) return;
+    if (activeApp == null || isTabDragging) return;
 
-    setOpenedTabs((prev) =>
+    setOpenedApps((prev) =>
       prev.map((t) =>
         t.id && !t.maximize ? { ...t, x: width / 2, y: height * 0.4 } : t
       )
     );
   }, [width, height]);
 
-  console.log("opened tabs:", openedTabs);
+  console.log("opened apps:", openedApps);
 
   const fromNavbar = (data: boolean) => {
     setIsNavbarTabClicked(data);
@@ -220,10 +178,10 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setRecycled,
         apps,
         setApps,
-        activeTab,
-        setActiveTab,
-        openedTabs,
-        setOpenedTabs,
+        activeApp,
+        setActiveApp,
+        openedApps,
+        setOpenedApps,
         emptyBin,
         deletePermanent,
         restoreApp,

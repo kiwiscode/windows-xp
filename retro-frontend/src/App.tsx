@@ -4,13 +4,13 @@ import Main from "./pages/Main";
 import Navbar from "./components/Navbar";
 
 import { useApp } from "./context/AppContext";
-import Tab from "./components/Tab";
 import { useEffect, useRef, useState } from "react";
 
 import "xp.css/dist/XP.css";
+import OpenedApp from "./components/App";
 
 function App() {
-  const { openedTabs } = useApp();
+  const { openedApps } = useApp();
 
   const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [tabMeasurements, setTabMeasurements] = useState<
@@ -22,7 +22,7 @@ function App() {
   };
 
   useEffect(() => {
-    const measurements = openedTabs.map((tab, index) => {
+    const measurements = openedApps.map((_, index) => {
       const el = tabRefs.current[index];
       if (el) {
         const rect = el.getBoundingClientRect();
@@ -36,7 +36,7 @@ function App() {
       return { x: 0, y: 0, width: 0, height: 0 };
     });
     setTabMeasurements(measurements);
-  }, [openedTabs]);
+  }, [openedApps]);
 
   return (
     <div className="relative">
@@ -46,10 +46,10 @@ function App() {
       </Routes>
       <Navbar tabRefs={tabRefs} setTabRef={setTabRef} />
 
-      {openedTabs.map((t, i) => {
+      {openedApps.map((t, i) => {
         if (t.minimized) return null;
         return (
-          <Tab
+          <OpenedApp
             key={t.id}
             id={t.id}
             title={t.title}
@@ -66,7 +66,7 @@ function App() {
             measurements={tabMeasurements[i]}
           >
             {t.children}
-          </Tab>
+          </OpenedApp>
         );
       })}
     </div>

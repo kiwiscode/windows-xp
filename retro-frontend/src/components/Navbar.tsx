@@ -14,12 +14,12 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
   const [showShutDownScreen, setShowShutDownScreen] = useState<boolean>(false);
 
   const {
-    openedTabs,
-    activeTab,
+    openedApps,
+    activeApp,
     fromNavbar,
-    setActiveTab,
+    setActiveApp,
     minimizeTab,
-    setOpenedTabs,
+    setOpenedApps,
   } = useApp();
 
   const soundRef = useRef<HTMLAudioElement>(null);
@@ -75,7 +75,7 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
         );
       }
     });
-  }, [openedTabs]);
+  }, [openedApps]);
 
   return (
     <>
@@ -197,7 +197,7 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
             />
           </div>
           <div className="flex justify-start items-center w-[80%] h-[35px]">
-            {openedTabs
+            {openedApps
               .filter((tab) => tab.prompt !== true)
               .map((t, i) => (
                 <div
@@ -206,11 +206,11 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
                     e.stopPropagation();
                     fromNavbar(true);
                     console.log("works");
-                    if (activeTab === t.id) {
-                      minimizeTab(t.id);
+                    if (activeApp === t.title) {
+                      minimizeTab(t.title);
                     } else {
-                      setActiveTab(t.id);
-                      setOpenedTabs((prev) =>
+                      setActiveApp(t.title);
+                      setOpenedApps((prev) =>
                         prev.map((tab) =>
                           tab.id === t.id ? { ...tab, minimized: false } : tab
                         )
@@ -224,11 +224,11 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
                   style={{
                     flex: "2 2 0%",
                     backgroundColor:
-                      t.id === activeTab
+                      t.title === activeApp
                         ? "rgb(30, 82, 183)"
                         : "rgb(60, 129, 243)",
                     boxShadow:
-                      t.id === activeTab
+                      t.title === activeApp
                         ? `rgb(0 0 0 / 20%) 0px 0px 1px 1px inset, rgb(0 0 0 / 70%) 1px 0px 1px inset`
                         : `rgb(0 0 0 / 30%) -1px 0px inset, rgb(255 255 255 / 20%) 1px 1px 1px inset`,
                   }}
