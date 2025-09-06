@@ -5,6 +5,12 @@ import Winamp from "../components/Webamp";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
+  const [showWinamp, setShowMinamp] = useState<boolean>(false);
+
+  const winampCallback = (data: boolean) => {
+    setShowMinamp(data);
+  };
+
   const [bgIndex, setBgIndex] = useState(0);
   const {
     recycled,
@@ -188,6 +194,9 @@ const Main = () => {
           onDoubleClick={() => {
             setClickedAppId(null);
             setActiveTab(app.id);
+            if (app.id === 6) {
+              setShowMinamp(true);
+            }
           }}
           onContextMenu={(e) => handleContextMenu(e, app.id)}
           key={app.id}
@@ -335,10 +344,7 @@ const Main = () => {
         src="/sounds/windows-xp-recycle-bin.mp3"
       />
 
-      <Winamp
-        onClose={() => console.log("close winamp")}
-        onMinimize={() => console.log("minimize winamp")}
-      />
+      <Winamp close={showWinamp} reopen={showWinamp} cb={winampCallback} />
     </div>
   );
 };

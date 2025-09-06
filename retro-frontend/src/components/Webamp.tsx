@@ -7,13 +7,12 @@ import {
 } from "../webamp-options/options";
 
 interface WinampProps {
-  onClose: () => void;
-  onMinimize: () => void;
+  reopen: boolean;
+  close: boolean;
+  cb: (param: boolean) => void;
 }
 
-const MIN_MILKDROP_WIDTH = 725;
-
-function Winamp({ onClose, onMinimize }: WinampProps) {
+function Winamp({ reopen, close, cb }: WinampProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const webamp = useRef<Webamp | null>(null);
 
@@ -54,12 +53,22 @@ function Winamp({ onClose, onMinimize }: WinampProps) {
       webamp.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    if (close) {
+      webamp.current?.close();
+    }
+    if (reopen) {
+      webamp.current?.reopen();
+    }
+  }, [close, reopen]);
+
   useEffect(() => {
     if (webamp.current) {
-      webamp.current.onClose(onClose);
-      webamp.current.onMinimize(onMinimize);
+      webamp.current.onClose(() => cb(false));
     }
-  });
+  }, []);
+
   return (
     <div
       style={{ position: "fixed", left: 0, top: 0, right: 0, bottom: 0 }}
