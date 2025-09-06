@@ -244,6 +244,10 @@ body {
   background-color: #c2c2b7;
 }
 
+#webamp .hide {
+  display: none;
+}
+
 #main-window,
 #equalizer-window,
 #playlist-window {
