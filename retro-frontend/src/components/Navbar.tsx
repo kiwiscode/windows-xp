@@ -2,6 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { UserRound } from "lucide-react";
 import ShutDownScreen from "./ShutDownScreen";
 import { useApp } from "../context/AppContext";
+import { renderTime } from "../utils/navbarTime";
+
+import sound from "/navbar-icons/sound.png";
+import usb from "/navbar-icons/usb.png";
+import risk from "/navbar-icons/risk.png";
+import RiskPopup from "./RiskPopup";
 
 interface NavbarProps {
   tabRefs: React.RefObject<(HTMLDivElement | null)[]>;
@@ -24,7 +30,7 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
 
   const soundRef = useRef<HTMLAudioElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
-  const startBtnRef = useRef<HTMLDivElement>(null);
+  const startBtnRef = useRef<HTMLImageElement>(null);
 
   const shutDown = () => {
     setShowStartBar(!showStartBar);
@@ -159,92 +165,113 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
         onClick={() => {
           fromNavbar(false);
         }}
-        className={`fixed w-full h-[35px] bg-[#245DDA] ${
+        className={`h-[30px] absolute bottom-0 left-0 right-0 flex ${
           isShuttingDown ? "-bottom-[40px]" : "bottom-0"
-        } right-0 left-0 transition-all duration-300`}
+        } transition-all duration-300`}
         style={{
-          boxShadow: "inset 0 8px 12px -8px #233357", // üst gölge
           background: `linear-gradient(
-      rgb(31, 47, 134) 0px,
-      rgb(49, 101, 196) 3%,
-      rgb(54, 130, 229) 6%,
-      rgb(68, 144, 230) 10%,
-      rgb(56, 131, 229) 12%,
-      rgb(43, 113, 224) 15%,
-      rgb(38, 99, 218) 18%,
-      rgb(35, 91, 214) 20%,
-      rgb(34, 88, 213) 23%,
-      rgb(33, 87, 214) 38%,
-      rgb(36, 93, 219) 54%,
-      rgb(37, 98, 223) 86%,
-      rgb(36, 95, 220) 89%,
-      rgb(33, 88, 212) 92%,
-      rgb(29, 78, 192) 95%,
-      rgb(25, 65, 165) 98%
-    )`,
+    to bottom,
+    #1f2f86 0,
+    #3165c4 3%,
+    #3682e5 6%,
+    #4490e6 10%,
+    #3883e5 12%,
+    #2b71e0 15%,
+    #2663da 18%,
+    #235bd6 20%,
+    #2258d5 23%,
+    #2157d6 38%,
+    #245ddb 54%,
+    #2562df 86%,
+    #245fdc 89%,
+    #2158d4 92%,
+    #1d4ec0 95%,
+    #1941a5 98%
+  )`,
         }}
       >
-        <div className="flex">
-          <div
+        <div className="h-full flex-1 overflow-hidden flex items-center">
+          <img
             ref={startBtnRef}
-            className="cursor-pointer w-[120px] h-[35px] outline-0"
             onClick={() => setShowStartBar(!showStartBar)}
-          >
-            <img
-              src="/navbar-icons/xp-start-btn.png"
-              alt=""
-              className="object-cover w-full h-full"
-            />
-          </div>
-          <div className="flex justify-start items-center w-[80%] h-[35px]">
-            {openedApps
-              .filter((tab) => tab.prompt !== true)
-              .map((t, i) => (
-                <div
-                  ref={(el) => setTabRef(i, el)}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    fromNavbar(true);
-                    console.log("works");
-                    if (activeApp === t.title) {
-                      minimizeTab(t.title);
-                    } else {
-                      setActiveApp(t.title);
-                      setOpenedApps((prev) =>
-                        prev.map((tab) =>
-                          tab.id === t.id ? { ...tab, minimized: false } : tab
-                        )
-                      );
-                    }
-                  }}
-                  className={`
-                    overflow-ellipsis relative flex items-center mt-[2px] mb-[1px]  max-w-[200px] h-[30px] cursor-default rounded-[2px] overflow-hidden whitespace-nowrap active:shadow_[box-shadow: rgb(0 0 0 / 20%) 0px 0px 1px 1px inset,
-    rgb(0 0 0 / 70%) 1px 0px 1px inset] hover:brightness-[120%]
-                    `}
-                  style={{
-                    flex: "2 2 0%",
-                    backgroundColor:
-                      t.title === activeApp
-                        ? "rgb(30, 82, 183)"
-                        : "rgb(60, 129, 243)",
-                    boxShadow:
-                      t.title === activeApp
-                        ? `rgb(0 0 0 / 20%) 0px 0px 1px 1px inset, rgb(0 0 0 / 70%) 1px 0px 1px inset`
-                        : `rgb(0 0 0 / 30%) -1px 0px inset, rgb(255 255 255 / 20%) 1px 1px 1px inset`,
-                  }}
-                >
-                  <img
-                    width={20}
-                    height={20}
-                    alt="icon"
-                    className="mx-[10px]"
-                    src={t.icon}
-                  />
-                  <div className="text-white text-[14px] whitespace-nowrap overflow-hidden text-ellipsis">
-                    {t.title}
-                  </div>
+            src="/navbar-icons/xp-start-btn.png"
+            alt=""
+            className="h-full mr-[10px] relative hover:brightness-[105%] active:brightness-[85%] active:pointer-none:"
+          />
+
+          {openedApps
+            .filter((tab) => tab.prompt !== true)
+            .map((t, i) => (
+              <div
+                ref={(el) => setTabRef(i, el)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  fromNavbar(true);
+                  console.log("works");
+                  if (activeApp === t.title) {
+                    minimizeTab(t.title);
+                  } else {
+                    setActiveApp(t.title);
+                    setOpenedApps((prev) =>
+                      prev.map((tab) =>
+                        tab.id === t.id ? { ...tab, minimized: false } : tab
+                      )
+                    );
+                  }
+                }}
+                style={{
+                  boxShadow:
+                    t.title === activeApp
+                      ? `rgb(0 0 0 / 20%) 0px 0px 1px 1px inset, rgb(0 0 0 / 70%) 1px 0px 1px inset`
+                      : `rgb(0 0 0 / 30%) -1px 0px inset, rgb(255 255 255 / 20%) 1px 1px 1px inset`,
+                }}
+                className={`
+    cursor-default flex-1 max-w-[150px] text-white rounded-[2px] mt-[2px] px-[8px] h-[22px] text-[11px]
+    relative flex items-center 
+    ${
+      t.title === activeApp
+        ? "bg-[rgb(30,82,183)] hover:bg-[#184293] shadow-[rgb(0_0_0/20%)_0px_0px_1px_1px_inset,_rgb(0_0_0/70%)_1px_0px_1px_inset] hover:shadow-[rgb(0_0_0/30%)_-1px_0px_inset,_rgb(255_255_255/20%)_1px_1px_1px_inset]"
+        : "bg-[rgb(60,129,243)] hover:bg-[#2f6dd1] shadow-[rgb(0_0_0/30%)_-1px_0px_inset,_rgb(255_255_255/20%)_1px_1px_1px_inset] hover:shadow-[rgb(0_0_0/20%)_0px_0px_1px_1px_inset,_rgb(0_0_0/70%)_1px_0px_1px_inset]"
+    }
+  `}
+              >
+                <img width={15} height={15} alt="icon" src={t.icon} />
+                <div className="absolute left-[27px] right-[8px] whitespace-nowrap overflow-hidden text-ellipsis">
+                  {t.title}
                 </div>
-              ))}
+              </div>
+            ))}
+        </div>
+        <div
+          className="bg-[#0b77e9] shrink-0  px-[10px] ml-[10px] flex items-center"
+          style={{
+            borderLeft: "1px solid #1042af",
+            boxShadow: "inset 1px 0 1px #18bbff",
+            background: `linear-gradient(
+      to bottom,
+      #0c59b9 1%,
+      #139ee9 6%,
+      #18b5f2 10%,
+      #139beb 14%,
+      #1290e8 19%,
+      #0d8dea 63%,
+      #0d9ff1 81%,
+      #0f9eed 88%,
+      #119be9 91%,
+      #1392e2 94%,
+      #137ed7 97%,
+      #095bc9 100%
+    )`,
+          }}
+        >
+          <img width={15} height={15} src={sound} alt="" />
+          <img width={15} height={15} src={usb} alt="" />
+          <img width={15} height={15} src={risk} alt="" />
+          <div style={{ position: "relative", width: 0, height: 0 }}>
+            <RiskPopup />
+          </div>
+          <div className="mx-[5px] text-white text-[11px] font-light shadow-none">
+            {renderTime()}
           </div>
         </div>
       </nav>

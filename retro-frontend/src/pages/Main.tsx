@@ -172,7 +172,11 @@ const Main = () => {
             handleAppClick(app.id);
           }}
         >
-          <img src={app.icon} alt={app.title} className="w-13 h-13 mb-1" />
+          <img
+            src={app.icon}
+            alt={app.title}
+            className="w-[32px] h-[32px] mb-1"
+          />
           <span
             className={`text-white px-1 text-[12px] text-center flex ${
               clickedAppId === app.id ? "bg-[#0d61ff]" : ""
