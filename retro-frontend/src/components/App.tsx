@@ -80,7 +80,6 @@ const OpenedApp = (props: AppType) => {
         e.stopPropagation();
         setActiveApp(props.title);
       }}
-      className="absolute"
       style={{
         left: props.maximize ? 0 : props.x,
 
@@ -93,9 +92,57 @@ const OpenedApp = (props: AppType) => {
         height: props.maximize ? "90%" : "50vh",
 
         zIndex: activeApp === props.title ? 11 : props.zIndex,
-        transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
+        // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
+        position: "absolute",
+        padding: "3px",
+        backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
+        display: "flex",
+        flexDirection: "column",
+        borderTopLeftRadius: "8px",
+        borderTopRightRadius: "8px",
       }}
     >
+      {/* holder header */}
+      <div
+        className={`
+    absolute
+    after:block
+    before:content-['']
+    before:absolute
+    before:inset-y-0
+    before:left-0
+    before:w-[15px]
+    before:bg-gradient-to-r
+    before:from-[#1638e6]
+    before:to-transparent
+    ${activeApp === props.title ? "before:opacity-100" : "before:opacity-30"}
+    after:content-['']
+    after:absolute
+    after:inset-y-0
+    after:right-0
+    after:w-[15px]
+    after:bg-gradient-to-l
+    after:from-[#1638e6]
+    after:to-transparent
+    ${activeApp === props.title ? "after:opacity-100" : "after:opacity-40"}
+  `}
+        style={{
+          background:
+            activeApp === props.title
+              ? "linear-gradient(to bottom,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)"
+              : "linear-gradient(to bottom, #7697e7 0%,#7e9ee3 3%,#94afe8 6%,#97b4e9 8%,#82a5e4 14%,#7c9fe2 17%,#7996de 25%,#7b99e1 56%,#82a9e9 81%,#80a5e7 89%,#7b96e1 94%,#7a93df 97%,#abbae3 100%)",
+          position: "absolute",
+          left: 0,
+          top: 0,
+          right: 0,
+          height: "28px",
+          pointerEvents: "none",
+          borderTopLeftRadius: "8px",
+          borderTopRightRadius: "8px",
+          overflow: "hidden",
+        }}
+      />
+      {/* real header */}
       <div
         onMouseDown={(e) => {
           handleMouseDown(e, props.id);
@@ -105,74 +152,29 @@ const OpenedApp = (props: AppType) => {
           maximizeTab(props.title);
         }}
         className={
-          "h-[35px]  rounded-tr-[8px] rounded-tl-[8px] bg-[#5c5c5c] text-white flex items-center justify-between z-10"
+          "flex h-[25px] leading-[25px] font-bold text-[12px] text-white absolute left-[3px] right-[3px] items-center"
         }
         style={{
-          pointerEvents: "auto",
-          background:
-            activeApp == props.title
-              ? `
-                linear-gradient(
-    rgb(0, 88, 238) 0%,
-    rgb(53, 147, 255) 4%,
-    rgb(40, 142, 255) 6%,
-    rgb(18, 125, 255) 8%,
-    rgb(3, 111, 252) 10%,
-    rgb(2, 98, 238) 14%,
-    rgb(0, 87, 229) 20%,
-    rgb(0, 84, 227) 24%,
-    rgb(0, 85, 235) 56%,
-    rgb(0, 91, 245) 66%,
-    rgb(2, 106, 254) 76%,
-    rgb(0, 98, 239) 86%,
-    rgb(0, 82, 214) 92%,
-    rgb(0, 64, 171) 94%,
-    rgb(0, 48, 146) 100%
-  )
-            `
-              : `linear-gradient(
-      rgb(118, 151, 231) 0%,
-      rgb(126, 158, 227) 3%,
-      rgb(148, 175, 232) 6%,
-      rgb(151, 180, 233) 8%,
-      rgb(130, 165, 228) 14%,
-      rgb(124, 159, 226) 17%,
-      rgb(121, 150, 222) 25%,
-      rgb(123, 153, 225) 56%,
-      rgb(130, 169, 233) 81%,
-      rgb(128, 165, 231) 89%,
-      rgb(123, 150, 225) 94%,
-      rgb(122, 147, 223) 97%,
-      rgb(171, 186, 227) 100%
-    )`,
+          textShadow: "1px 1px #000",
         }}
       >
+        {!props.prompt && (
+          <img
+            width={15}
+            height={15}
+            alt="icon"
+            src={props.icon}
+            className="ml-[1px] mr-[3px]"
+          />
+        )}
         <div
-          style={{
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-          }}
-          className="handle"
+          className="flex-1 pointer-events-none pr-[5px] overflow-hidden whitespace-nowrap overflow-ellipsis"
+          style={{ textShadow: "1px 1px rgb(0 0 0)", letterSpacing: "0.5px" }}
         >
-          {!props.prompt && (
-            <img
-              width={20}
-              height={20}
-              alt="icon"
-              src={props.icon}
-              className="ml-[8px]"
-            />
-          )}
-          <div
-            className="text-[14px] font-bold ml-[5px]"
-            style={{ textShadow: "1px 1px rgb(0 0 0)" }}
-          >
-            {props.title}
-          </div>
+          {props.title}
         </div>
-        <div className="flex items-center">
+
+        <div className="h-[22px] flex items-center mt-[-1px] mr-[1px]">
           {!props.prompt && (
             <div
               onClick={() => {
@@ -205,13 +207,13 @@ const OpenedApp = (props: AppType) => {
       </div>
 
       <div
-        className="flex px-[4px] pb-[4px] h-full transition-all duration-300"
+        className="flex-1 relative mt-[25px]"
         style={{
-          backgroundColor:
-            activeApp == props.title ? "rgb(8, 49, 217)" : "rgb(117, 135, 221)",
+          height: "calc(100% - 25px)",
         }}
       >
-        <div className="flex flex-col bg-white h-full w-full">
+        <div className="h-full w-full absolute flex overflow-hidden flex-col bg-[linear-gradient(to_right,#edede5_0%,#ede8cd_100%)]">
+          {/* tab navbar */}
           {!props.prompt && (
             <TabNavbar
               title={props.title}
@@ -219,6 +221,8 @@ const OpenedApp = (props: AppType) => {
               programType={props.programType}
             />
           )}
+
+          {/* tab content */}
           {props.children}
         </div>
       </div>
