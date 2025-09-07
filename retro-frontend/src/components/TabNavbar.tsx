@@ -42,31 +42,12 @@ const TabNavbar = ({ title, icon, programType }: props) => {
             <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
               View
             </p>
-            {programType === "recycle" ? (
-              <>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Favourites
-                </p>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Tools
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Insert
-                </p>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Format
-                </p>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Tools
-                </p>
-                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
-                  Message
-                </p>
-              </>
-            )}
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              Favorites
+            </p>
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              Tools
+            </p>
             <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
               Help
             </p>
@@ -206,8 +187,14 @@ const TabNavbar = ({ title, icon, programType }: props) => {
                   border: "1px solid rgba(122, 122, 255, 0.6)",
                 }}
               >
-                <img alt="icon" width={14} height={14} src={icon} />
-                <div className="whitespace-nowrap absolute left-[16px] right-[17px]">
+                <img
+                  alt="icon"
+                  width={14}
+                  height={14}
+                  src={icon}
+                  className="ml-[2px]"
+                />
+                <div className="whitespace-nowrap absolute left-[18px] right-[17px]">
                   {title}
                 </div>
 
