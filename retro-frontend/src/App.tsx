@@ -39,7 +39,7 @@ function App() {
   }, [openedApps]);
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden h-full">
       <BlueScreen show={false} />
       <Routes>
         <Route path="/" element={<Main />} />
