@@ -1,5 +1,4 @@
 import BlueScreen from "./components/BlueScreen";
-import { Routes, Route } from "react-router-dom";
 import Main from "./pages/Main";
 import Navbar from "./components/Navbar";
 
@@ -39,11 +38,9 @@ function App() {
   }, [openedApps]);
 
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden h-full">
       <BlueScreen show={false} />
-      <Routes>
-        <Route path="/" element={<Main />} />
-      </Routes>
+      <Main />
       <Navbar tabRefs={tabRefs} setTabRef={setTabRef} />
 
       {openedApps.map((t, i) => {

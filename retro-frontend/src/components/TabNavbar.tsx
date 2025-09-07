@@ -2,7 +2,6 @@ import back from "/tab-icons/tab-static-bar/back.png";
 import forward from "/tab-icons/tab-static-bar/forward.png";
 import folder from "/tab-icons/tab-static-bar/folder.png";
 import search from "/tab-icons/tab-static-bar/search.png";
-import arrowDown from "/tab-icons/tab-static-bar/arrow-down.png";
 import folders from "/tab-icons/tab-static-bar/folders.png";
 import go from "/tab-icons/tab-static-bar/go.png";
 import thumbnail from "/tab-icons/tab-static-bar/thumbnail.png";
@@ -17,182 +16,224 @@ interface props {
 }
 
 const TabNavbar = ({ title, icon, programType }: props) => {
-  const handleBackClick = () => {};
-
-  const backBtnActive = false;
   return (
     <>
-      <div
-        className="flex md:h-[32px] max-md:h-[60px] max-md:flex-wrap"
+      <section
+        className="relative flex items-center h-[24px] shrink-0 border-b"
         style={{
-          borderBottom: "2px solid rgba(0, 0, 0, 0.1)",
+          borderBottom: "2px solid rgba(255, 255, 255, 0.7)",
         }}
       >
+        {/* left side */}
         <div
-          className="flex flex-wrap items-center justify-start h-full w-full bg-[#ede9d3] pl-[2px]"
+          className="h-[23px] py-[1px] pl-[2px] border-l-0 flex-1 cursor-default"
           style={{
+            borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
             borderRight: "1px solid rgba(0, 0, 0, 0.1)",
           }}
         >
-          <p className="toolbar-item">File</p>
-          <p className="toolbar-item">Edit</p>
-          <p className="toolbar-item">View</p>
-          {programType === "recycle" ? (
-            <div style={{ display: "flex" }}>
-              <p className="toolbar-item">Favourites</p>
-              <p className="toolbar-item">Tools</p>
-            </div>
-          ) : (
-            <div style={{ display: "flex" }}>
-              <p className="toolbar-item">Insert</p>
-              <p className="toolbar-item">Format</p>
-              <p className="toolbar-item">Tools</p>
-              <p className="toolbar-item">Message</p>
-            </div>
-          )}
-          <p className="toolbar-item">Help</p>
-          <div className="flex ml-auto">
-            <img
-              src="/tab-icons/tab-static-bar/winlogo.png"
-              alt=""
-              width={30}
-              height={30}
-              className="object-cover"
-            />
+          <div className="inline-flex h-[20px] items-center mt-[2px] leading-[20px] relative">
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              File
+            </p>
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              Edit
+            </p>
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              View
+            </p>
+            {programType === "recycle" ? (
+              <>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Favourites
+                </p>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Tools
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Insert
+                </p>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Format
+                </p>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Tools
+                </p>
+                <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+                  Message
+                </p>
+              </>
+            )}
+            <p className="text-[11px] h-full relative px-[7px] hover:bg-[#1660e8] hover:text-white">
+              Help
+            </p>
           </div>
         </div>
-      </div>
+        {/* windows logo */}
+        <img
+          src="/tab-icons/tab-static-bar/winlogo.png"
+          alt=""
+          className="h-full"
+          style={{
+            borderLeft: "1px solid white",
+            borderBottom: "1px solid rgba(0, 0, 0, 0.1)",
+          }}
+        />
+      </section>
 
       {(programType === "recycle" || programType === "my computer") && (
-        <div>
-          <div className="flex flex-wrap bg-[#ede9d3] min-h-[24px] items-center p-[5px] text-[12px]">
-            <div
-              onClick={handleBackClick}
-              className={backBtnActive ? "back-enabled" : "back-disabled"}
-            >
-              <img alt="back" width={25} height={25} src={back} />
-              <p style={{ margin: "0 5px" }}>Back</p>
-              <hr />
-              <img
-                style={{ margin: "0 4px" }}
-                alt="arrowDown"
-                width={6}
-                height={6}
-                src={arrowDown}
-              />
-            </div>
-            <div className="flex items-center grayscale-[100%]">
-              <img
-                style={{ margin: "0 6px" }}
-                alt="forward"
-                width={25}
-                height={25}
-                src={forward}
-              />
-              <img
-                style={{ margin: "0 4px" }}
-                alt="arrowDown"
-                width={6}
-                height={6}
-                src={arrowDown}
-              />
-            </div>
-            <img
-              alt="folder"
-              style={{ margin: "0 5px" }}
-              width={25}
-              height={25}
-              src={folder}
-            />
-            <div
-              className="h-full mx-[8px]"
-              style={{
-                borderLeft: "1px solid #cac6af",
-              }}
-            />
-            <div className="flex items-center">
-              <img
-                style={{ margin: "0 6px" }}
-                alt="search"
-                width={25}
-                height={25}
-                src={search}
-              />
-              <p>Search</p>
-            </div>
-            <div className="flex items-center">
-              <img
-                style={{ margin: "0 6px" }}
-                alt="folders"
-                width={25}
-                height={25}
-                src={folders}
-              />
-              <p>Folders</p>
-            </div>
-            <div
-              className="h-full mx-[8px]"
-              style={{
-                borderLeft: "1px solid #cac6af",
-              }}
-            />
-            <img
-              style={{ margin: "0 6px" }}
-              alt="thumbnail"
-              width={25}
-              height={25}
-              src={thumbnail}
-            />
-            <img alt="arrowDown" width={6} height={6} src={arrowDown} />
-          </div>
-          <div
-            className="flex h-[24px] bg-[#ede9d3]"
-            style={{
-              borderTop: "2px solid rgba(0,0,0, 0.1)",
-            }}
-          >
-            <div className="px-[5px] flex w-full items-center">
-              <p style={{ color: "#7f7c73", fontSize: "11px", width: "55px" }}>
-                Address
-              </p>
+        <>
+          {/* navigation */}
+          <section>
+            <div className="h-[36px] flex items-center text-[11px] py-[1px] px-[3px] shrink-0 border-b-[1px] border-b-[rgba(0,0,0,0.1)] cursor-default">
               <div
-                className="flex bg-white w-full items-center mx-[5px] justify-between"
+                className="opacity-[0.7] flex h-full items-center"
                 style={{
-                  border: " 1px solid rgba(0,0,0,0.2)",
+                  filter: "grayscale(1)",
+                  border: "1px solid rgba(0,0,0,0)",
                 }}
               >
+                <img alt="back" src={back} />
+                <span style={{ marginRight: "4px" }}>Back</span>{" "}
                 <div
-                  style={{ display: "flex", alignItems: "center" }}
-                  className=" text-[12px]"
-                >
-                  <img
-                    style={{ margin: "0px 3px" }}
-                    alt="icon"
-                    width={18}
-                    height={18}
-                    src={icon}
-                  />
+                  className="h-full flex items-center mx-[4px] before:content-[''] before:block before:border-solid
+  before:border-t-[3px] 
+  before:border-x-[3px] 
+  before:border-b-0
+  before:border-t-black
+  before:border-x-transparent
+  before:border-b-transparent"
+                />
+              </div>
+              <div
+                className="opacity-[0.7] flex h-full items-center"
+                style={{
+                  filter: "grayscale(1)",
+                  border: "1px solid rgba(0,0,0,0)",
+                }}
+              >
+                <img alt="back" src={forward} />
+                <div
+                  className="h-full flex items-center mx-[4px] before:content-[''] before:block before:border-solid
+  before:border-t-[3px] 
+  before:border-x-[3px] 
+  before:border-b-0
+  before:border-t-black
+  before:border-x-transparent
+  before:border-b-transparent"
+                />
+              </div>
+              <div className="nav-btn-tab">
+                <img
+                  alt="back"
+                  width={22}
+                  height={22}
+                  className="mr-[4px] ml-[1px]"
+                  src={folder}
+                />
+              </div>
+              <div
+                className="h-[90%] w-[1px] mx-[2px]"
+                style={{
+                  backgroundColor: "rgba(0,0,0,0.2)",
+                }}
+              />
+
+              <div className="nav-btn-tab">
+                <img
+                  alt="back"
+                  width={22}
+                  height={22}
+                  className="mr-[4px] ml-[1px]"
+                  src={search}
+                />
+                <span className="mr-[4px]">Search</span>{" "}
+              </div>
+              <div className="nav-btn-tab">
+                <img
+                  alt="back"
+                  width={22}
+                  height={22}
+                  className="mr-[4px] ml-[1px]"
+                  src={folders}
+                />
+                <span className="mr-[4px]">Folders</span>{" "}
+              </div>
+              <div
+                className="h-[90%] w-[1px] mx-[2px]"
+                style={{
+                  backgroundColor: "rgba(0,0,0,0.2)",
+                }}
+              />
+              <div className="nav-btn-tab">
+                <img
+                  alt="back"
+                  width={22}
+                  height={22}
+                  className="mr-[1px] ml-[2px]"
+                  src={thumbnail}
+                />
+                <div
+                  className="h-full flex items-center mx-[4px] before:content-[''] before:block before:border-solid
+  before:border-t-[3px] 
+  before:border-x-[3px] 
+  before:border-b-0
+  before:border-t-black
+  before:border-x-transparent
+  before:border-b-transparent"
+                />
+              </div>
+            </div>
+          </section>
+          {/* adress bar */}
+          <section>
+            <div
+              className="flex items-center h-[20px] text-[11px] px-[2px] shrink-0"
+              style={{
+                borderTop: "1px solid rgba(255, 255, 255, 0.7)",
+                boxShadow: "inset 0 -2px 3px -1px #b0b0b0",
+              }}
+            >
+              <div className="p-[5px] text-[rgba(0,0,0,0.5)] leading-[100%]">
+                Address
+              </div>
+              <div
+                className="h-full flex flex-1 items-center bg-white relative"
+                style={{
+                  border: "1px solid rgba(122, 122, 255, 0.6)",
+                }}
+              >
+                <img alt="icon" width={14} height={14} src={icon} />
+                <div className="whitespace-nowrap absolute left-[16px] right-[17px]">
                   {title}
                 </div>
+
                 <img
                   alt="dropdown"
-                  className="hover:brightness-[1.1]"
-                  width={16}
-                  height={18}
+                  className="absolute right-[1px] hover:brightness-[1.1]"
+                  width={15}
+                  height={15}
                   src={tooldropdown}
                 />
               </div>
-              <img
-                alt="go"
-                className="hover:brightness-[1.1]"
-                width={20}
-                height={20}
-                src={go}
-              />
-              <p className="text-[12px]">Go</p>
+
+              <div className="flex items-center h-[95%] relative pr-[18px] pl-[5px]">
+                <img
+                  alt="go"
+                  className="h-[95%] mr-[3px] "
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.2)",
+                  }}
+                  src={go}
+                />
+                <span className="text-[rgba(0, 0, 0, 0.5)]">Go</span>
+              </div>
             </div>
-          </div>
-        </div>
+          </section>
+        </>
       )}
     </>
   );
