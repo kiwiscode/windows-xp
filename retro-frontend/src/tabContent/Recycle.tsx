@@ -59,7 +59,13 @@ const Recycle = () => {
                 e.stopPropagation();
               }}
             >
-              <img src={i.icon} alt={i.title} className="w-13 h-13 mb-1" />
+              <img
+                src={i.icon}
+                alt={i.title}
+                width={48}
+                height={48}
+                className="mb-1"
+              />
               <span
                 className={`text-black px-1 text-[12px] text-center flex ${
                   clickedAppTitle === i.title ? "bg-[#0d61ff] text-white" : ""

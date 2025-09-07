@@ -94,6 +94,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     );
   };
 
+  console.log("opened apps:", openedApps);
+
   const closeTab = (appTitle: string | null) => {
     setOpenedApps((prev) => prev.filter((app) => app.title !== appTitle));
 
@@ -152,8 +154,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   }, [activeApp, width, height]);
 
-  console.log("active app:", activeApp);
-
   useEffect(() => {
     if (activeApp == null || isTabDragging) return;
 
@@ -164,11 +164,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     );
   }, [width, height]);
 
-  console.log("opened apps:", openedApps);
-
   const fromNavbar = (data: boolean) => {
     setIsNavbarTabClicked(data);
-    console.log("data from navbar:", data);
   };
 
   return (

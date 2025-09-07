@@ -24,7 +24,7 @@ const MyComputer = () => {
     >
       <div className="flex h-full overflow-auto">
         {/* left */}
-        <div className="w-[180px] h-[100%] overflow-auto p-[10px] bg-[linear-gradient(to_bottom,#748aff_0%,#4057d3_100%)] ">
+        <div className="w-[180px] h-[100%] overflow-auto box-border p-[10px] bg-[linear-gradient(to_bottom,#748aff_0%,#4057d3_100%)] ">
           {/* first */}
           <div
             className="flex items-center h-[23px] rounded-tr-[3px] rounded-tl-[3px] pl-[11px] pr-[2px] cursor-pointer 

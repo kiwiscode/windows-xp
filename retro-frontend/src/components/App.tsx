@@ -30,15 +30,33 @@ const OpenedApp = (props: AppType) => {
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       setOpenedApps((prev) =>
-        prev.map((t) =>
-          t.id === id
-            ? {
-                ...t,
-                x: t.x + moveEvent.movementX,
-                y: t.y + moveEvent.movementY,
-              }
-            : t
-        )
+        prev.map((t) => {
+          if (t.id === id) {
+            let newX = t.x + moveEvent.movementX;
+            let newY = t.y + moveEvent.movementY;
+
+            const tabWidth = tabRef.current?.offsetWidth || 700;
+            const tabHeight = tabRef.current?.offsetHeight || 500;
+
+            const windowWidth = window.innerWidth;
+            const windowHeight = window.innerHeight;
+
+            // Prevent the dragged tab from going outside the window
+            if (newX < tabWidth / 2) newX = tabWidth / 2;
+            if (newX > windowWidth - tabWidth / 2)
+              newX = windowWidth - tabWidth / 2;
+            if (newY < tabHeight / 2) newY = tabHeight / 2;
+            if (newY > windowHeight - tabHeight / 2)
+              newY = windowHeight - tabHeight / 2;
+
+            return {
+              ...t,
+              x: newX,
+              y: newY,
+            };
+          }
+          return t;
+        })
       );
     };
 
@@ -52,9 +70,6 @@ const OpenedApp = (props: AppType) => {
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
   };
-
-  console.log(props.x);
-  console.log(props.y);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -87,9 +102,9 @@ const OpenedApp = (props: AppType) => {
 
         transform: props.maximize ? undefined : "translate(-50%, -50%)",
 
-        width: props.maximize ? "100%" : "50vw",
+        width: props.maximize ? window.innerWidth - 3 : "700px",
 
-        height: props.maximize ? "90%" : "50vh",
+        height: props.maximize ? window.innerHeight - 36 : "500px",
 
         zIndex: activeApp === props.title ? 11 : props.zIndex,
         // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
@@ -98,8 +113,8 @@ const OpenedApp = (props: AppType) => {
         backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
         display: "flex",
         flexDirection: "column",
-        borderTopLeftRadius: "8px",
-        borderTopRightRadius: "8px",
+        borderTopLeftRadius: props.maximize ? "0px" : "8px",
+        borderTopRightRadius: props.maximize ? "0px" : "8px",
       }}
     >
       {/* holder header */}
@@ -137,8 +152,8 @@ const OpenedApp = (props: AppType) => {
           right: 0,
           height: "28px",
           pointerEvents: "none",
-          borderTopLeftRadius: "8px",
-          borderTopRightRadius: "8px",
+          borderTopLeftRadius: props.maximize ? "0px" : "8px",
+          borderTopRightRadius: props.maximize ? "0px" : "8px",
           overflow: "hidden",
         }}
       />

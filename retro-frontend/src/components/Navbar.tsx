@@ -68,21 +68,6 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
     };
   }, [showStartBar]);
 
-  useEffect(() => {
-    tabRefs.current.forEach((tab, index) => {
-      if (tab) {
-        const rect = tab.getBoundingClientRect();
-        console.log(
-          `Tab ${index} position:`,
-          rect.x,
-          rect.y,
-          rect.width,
-          rect.height
-        );
-      }
-    });
-  }, [openedApps]);
-
   return (
     <>
       {showShutDownScreen && <ShutDownScreen />}
@@ -207,7 +192,6 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   fromNavbar(true);
-                  console.log("works");
                   if (activeApp === t.title) {
                     minimizeTab(t.title);
                   } else {
