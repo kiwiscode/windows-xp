@@ -11,6 +11,7 @@ import Recycle from "../tabContent/Recycle";
 import MyComputer from "../tabContent/MyComputer";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import { initialApps } from "../data/initialApps";
+import { toTheFront } from "../utils/nonTabRecognizer";
 
 interface AppContextType {
   recycled: AppItem[];
@@ -49,7 +50,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isTabDragging, setIsTabDragging] = useState<boolean>(false);
 
   const { width, height } = useWindowDimensions();
-
+  const [firstLoad, setFirstLoad] = useState<boolean>(true);
   const emptyBin = () => {
     setRecycled([]);
   };
@@ -94,8 +95,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     );
   };
 
-  console.log("opened apps:", openedApps);
-
   const closeTab = (appTitle: string | null) => {
     setOpenedApps((prev) => prev.filter((app) => app.title !== appTitle));
 
@@ -105,6 +104,83 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   useEffect(() => {
+    if (firstLoad) {
+      setOpenedApps((prev) => {
+        return [
+          ...prev,
+          {
+            id: 6,
+            title: "Winamp",
+            icon: "/desktop-icons/Winamp-logo.png",
+            minimized: false,
+            maximize: false,
+            zIndex: 3,
+            children: "winamp",
+            programType: "winamp",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          },
+          {
+            id: 2,
+            title: "My Computer",
+            icon: "/desktop-icons/this-pc.ico",
+            minimized: false,
+            maximize: false,
+            zIndex: 2,
+            children: <MyComputer />,
+            programType: "my computer",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          },
+          {
+            id: 3,
+            title: "Recycle Bin",
+            icon: "/desktop-icons/recycle-bin.ico",
+            minimized: false,
+            maximize: false,
+            zIndex: 1,
+            children: <Recycle />,
+            programType: "recycle",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          },
+        ];
+      });
+    }
+
+    setFirstLoad(false);
+  }, []);
+
+  useEffect(() => {
+    // toTheFront(activeApp);
+
+    if (activeApp === "Winamp") {
+      setOpenedApps((prev) => {
+        const exists = prev.some((tab) => tab.id === 6);
+        if (exists) return prev;
+
+        return [
+          ...prev,
+          {
+            id: 6,
+            title: "Winamp",
+            icon: "/desktop-icons/Winamp-logo.png",
+            minimized: false,
+            maximize: false,
+            zIndex: 0,
+            children: "winamp",
+            programType: "winamp",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          },
+        ];
+      });
+    }
+
     if (activeApp === "My Computer") {
       setOpenedApps((prev) => {
         const exists = prev.some((tab) => tab.id === 2);
@@ -118,7 +194,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             icon: "/desktop-icons/this-pc.ico",
             minimized: false,
             maximize: false,
-            zIndex: 10,
+            zIndex: 0,
             children: <MyComputer />,
             programType: "my computer",
             prompt: false,
@@ -142,7 +218,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             icon: "/desktop-icons/recycle-bin.ico",
             minimized: false,
             maximize: false,
-            zIndex: 10,
+            zIndex: 0,
             children: <Recycle />,
             programType: "recycle",
             prompt: false,
@@ -168,6 +244,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
+  console.log("opened apps:", openedApps);
+  console.log("active app:", activeApp);
   return (
     <AppContext.Provider
       value={{

@@ -106,7 +106,7 @@ const OpenedApp = (props: AppType) => {
 
         height: props.maximize ? window.innerHeight - 36 : "500px",
 
-        zIndex: activeApp === props.title ? 11 : props.zIndex,
+        zIndex: props.zIndex,
         // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
         position: "absolute",
         padding: "3px",

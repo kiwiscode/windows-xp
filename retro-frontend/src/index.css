@@ -178,6 +178,10 @@ body {
   transform: translate(1px, 1px);
 }
 
+/* #webamp {
+  z-index: 30 !important;
+} */
+
 #webamp .hide {
   display: none;
 }

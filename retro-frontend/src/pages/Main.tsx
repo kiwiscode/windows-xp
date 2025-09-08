@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
 import type { AppItem } from "../types/AppItem";
-import Winamp from "../components/Webamp";
+import Winamp from "../components/Winamp";
 import { initialApps } from "../data/initialApps";
+import OpenedApp from "../components/App";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
@@ -21,6 +22,7 @@ const Main = () => {
     setApps,
     setActiveApp,
     fromNavbar,
+    openedApps,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
@@ -134,6 +136,28 @@ const Main = () => {
     setMenuVisible(false);
     setSelectedAppTitle(null);
   };
+
+  const tabRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const [tabMeasurements, setTabMeasurements] = useState<
+    { x: number; y: number; width: number; height: number }[]
+  >([]);
+
+  useEffect(() => {
+    const measurements = openedApps.map((_, index) => {
+      const el = tabRefs.current[index];
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        return {
+          x: rect.x,
+          y: rect.y,
+          width: rect.width,
+          height: rect.height,
+        };
+      }
+      return { x: 0, y: 0, width: 0, height: 0 };
+    });
+    setTabMeasurements(measurements);
+  }, [openedApps]);
 
   return (
     <div
@@ -304,7 +328,39 @@ const Main = () => {
         src="/sounds/windows-xp-recycle-bin.mp3"
       />
 
-      <Winamp close={showWinamp} reopen={showWinamp} cb={winampCallback} />
+      {openedApps.map((t, i) => {
+        if (t.minimized || t.programType === "winamp") {
+          return (
+            <Winamp
+              key={t.id || i}
+              close={showWinamp}
+              reopen={showWinamp}
+              cb={winampCallback}
+            />
+          );
+        }
+
+        return (
+          <OpenedApp
+            key={t.id}
+            id={t.id}
+            title={t.title}
+            icon={t.icon}
+            zIndex={t.zIndex}
+            programType={t.programType}
+            minimized={t.minimized}
+            maximize={t.maximize}
+            prompt={t.prompt}
+            x={t.x}
+            y={t.y}
+            targetX={t.targetX}
+            targetY={t.targetY}
+            measurements={tabMeasurements[i]}
+          >
+            {t.children}
+          </OpenedApp>
+        );
+      })}
     </div>
   );
 };

@@ -7,7 +7,7 @@ import go from "/tab-icons/tab-static-bar/go.png";
 import thumbnail from "/tab-icons/tab-static-bar/thumbnail.png";
 import tooldropdown from "/tab-icons/tab-static-bar/tooldropdown.png";
 
-type App = "recycle" | "my computer";
+type App = "recycle" | "my computer" | "winamp";
 
 interface props {
   title: string;

@@ -7,8 +7,8 @@ export type App = {
   minimized: boolean;
   maximize: boolean;
   zIndex: number;
-  children: React.ReactNode;
-  programType: "recycle" | "my computer";
+  children: React.ReactNode | string;
+  programType: "recycle" | "my computer" | "winamp";
   prompt: boolean;
   x: number;
   y: number;

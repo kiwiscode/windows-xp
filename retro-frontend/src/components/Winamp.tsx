@@ -46,7 +46,14 @@ function Winamp({ reopen, close, cb }: WinampProps) {
       enableHotkeys: true,
     });
 
-    webamp.current.renderWhenReady(target);
+    // webamp.current.renderWhenReady(target)
+
+    webamp.current.renderWhenReady(target).then(() => {
+      const webampEl = document.querySelector("#webamp");
+      if (webampEl) {
+        target.appendChild(webampEl);
+      }
+    });
 
     return () => {
       webamp.current?.dispose();
@@ -71,7 +78,13 @@ function Winamp({ reopen, close, cb }: WinampProps) {
 
   return (
     <div
-      style={{ position: "fixed", left: 0, top: 0, right: 0, bottom: 0 }}
+      style={{
+        position: "fixed",
+        left: 0,
+        top: 0,
+        right: 0,
+        bottom: 0,
+      }}
       ref={ref}
     />
   );

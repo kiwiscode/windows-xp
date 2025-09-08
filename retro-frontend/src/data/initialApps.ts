@@ -38,7 +38,7 @@ export const initialApps: AppItem[] = [
   },
   {
     id: 6,
-    title: "WINAMP",
+    title: "Winamp",
     icon: "/desktop-icons/Winamp-logo.png",
     x: 0,
     y: 475,

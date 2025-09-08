@@ -9,12 +9,7 @@ import usb from "/navbar-icons/usb.png";
 import risk from "/navbar-icons/risk.png";
 import RiskPopup from "./RiskPopup";
 
-interface NavbarProps {
-  tabRefs: React.RefObject<(HTMLDivElement | null)[]>;
-  setTabRef: (index: number, el: HTMLDivElement | null) => void;
-}
-
-const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
+const Navbar: React.FC = () => {
   const [isShuttingDown, setIsShuttingDown] = useState<boolean>(false);
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
   const [showShutDownScreen, setShowShutDownScreen] = useState<boolean>(false);
@@ -188,7 +183,7 @@ const Navbar: React.FC<NavbarProps> = ({ tabRefs, setTabRef }) => {
             .filter((tab) => tab.prompt !== true)
             .map((t, i) => (
               <div
-                ref={(el) => setTabRef(i, el)}
+                key={t.id}
                 onClick={(e) => {
                   e.stopPropagation();
                   fromNavbar(true);
