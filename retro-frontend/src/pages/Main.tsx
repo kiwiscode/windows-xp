@@ -164,6 +164,7 @@ const Main = () => {
       {/* <BlueScreen show={false} /> */}
       <div>
         {/* desktop apps */}
+
         {apps.map((app) => (
           <div
             onDoubleClick={() => {
@@ -179,7 +180,6 @@ const Main = () => {
             style={{
               left: app.x,
               top: app.y,
-              zIndex: clickedAppId === app.id ? 11 : 10,
               transition: !isDragging ? "all 0.3s" : "none",
             }}
             onMouseDown={(e) => {
@@ -324,11 +324,9 @@ const Main = () => {
         />
       </div>
 
-      {/* app comtent */}
+      {/* app content */}
       <div className="relative z-0">
         {openedApps.map((t, i) => {
-          if (t.minimized) return null;
-
           return (
             <OpenedApp
               key={t.id || i}

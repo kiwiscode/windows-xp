@@ -131,7 +131,7 @@ const OpenedApp = (props: AppType) => {
         position: "absolute",
         padding: !props.showHeader ? 0 : "3px",
         backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
-        display: "flex",
+        display: !props.minimized ? "flex" : "none",
         flexDirection: "column",
         borderTopLeftRadius: props.maximize ? "0px" : "8px",
         borderTopRightRadius: props.maximize ? "0px" : "8px",

@@ -106,14 +106,15 @@ const Footer: React.FC = () => {
           .filter((tab) => tab.prompt !== true)
           .map((t, i) => (
             <div
-              key={t.id}
+              key={t.id | i}
               onClick={(e) => {
                 e.stopPropagation();
                 fromNavbar(true);
+                setActiveApp(t.title);
+
                 if (activeApp === t.title) {
                   minimizeTab(t.title);
                 } else {
-                  setActiveApp(t.title);
                   setOpenedApps((prev) =>
                     prev.map((tab) =>
                       tab.id === t.id ? { ...tab, minimized: false } : tab
