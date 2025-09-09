@@ -31,6 +31,7 @@ interface AppContextType {
   setIsTabDragging: React.Dispatch<React.SetStateAction<boolean>>;
   fromNavbar: (param: boolean) => void;
   isNavbarTabClicked: boolean;
+  addTab: (param: string) => void;
 }
 
 interface AppProviderProps {
@@ -60,6 +61,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [isTabDragging, setIsTabDragging] = useState<boolean>(false);
 
   const { width, height } = useWindowDimensions();
+  const isMobile = width <= 768;
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const emptyBin = () => {
@@ -106,6 +108,78 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     );
   };
 
+  const addTab = (appTitle: string | null) => {
+    if (!appTitle) return;
+
+    console.log("app title:", appTitle);
+
+    setOpenedApps((prev) => {
+      const exists = prev.some((app) => app.title === appTitle);
+      if (exists) return prev;
+
+      const isMobile = width <= 768;
+      let newApp: AppType | null = null;
+
+      switch (appTitle) {
+        case "Winamp":
+          newApp = {
+            id: generateId(),
+            zIndex: generateIndex(),
+            title: "Winamp",
+            icon: "/desktop-icons/Winamp-logo.png",
+            minimized: false,
+            maximize: false,
+            showHeader: false,
+            children: "winamp",
+            programType: "winamp",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          };
+          break;
+
+        case "My Computer":
+          newApp = {
+            id: generateId(),
+            zIndex: generateIndex(),
+            title: "My Computer",
+            icon: "/desktop-icons/this-pc.ico",
+            minimized: isMobile ? true : false,
+            maximize: isMobile ? true : false,
+            showHeader: true,
+            children: <MyComputer />,
+            programType: "my computer",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          };
+          break;
+
+        case "Recycle Bin":
+          newApp = {
+            id: generateId(),
+            zIndex: generateIndex(),
+            title: "Recycle Bin",
+            icon: "/desktop-icons/recycle-bin.ico",
+            minimized: isMobile ? true : false,
+            maximize: isMobile ? true : false,
+            showHeader: true,
+            children: <Recycle />,
+            programType: "recycle",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          };
+          break;
+
+        default:
+          return prev;
+      }
+
+      return newApp ? [...prev, newApp] : prev;
+    });
+  };
+
   const closeTab = (appTitle: string | null) => {
     setOpenedApps((prev) => prev.filter((app) => app.title !== appTitle));
 
@@ -125,7 +199,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             title: "Winamp",
             icon: "/desktop-icons/Winamp-logo.png",
             minimized: false,
-            maximize: width <= 768 ? true : false,
+            maximize: false,
             showHeader: false,
             children: "winamp",
             programType: "winamp",
@@ -138,8 +212,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             zIndex: generateIndex(),
             title: "My Computer",
             icon: "/desktop-icons/this-pc.ico",
-            minimized: width <= 768 ? true : false,
-            maximize: width <= 768 ? true : false,
+            minimized: isMobile ? true : false,
+            maximize: isMobile ? true : false,
             showHeader: true,
             children: <MyComputer />,
             programType: "my computer",
@@ -150,7 +224,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         ];
       });
 
-      if (width > 768) {
+      if (!isMobile) {
         setOpenedApps((prev) => {
           return [
             ...prev,
@@ -193,58 +267,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
-  // minimize Winamp from its own header
-  const minimizeWinamp = () => {
-    const minimizeBtn = document.querySelector("#webamp #title-bar #minimize");
-
-    if (minimizeBtn) {
-      const handleClick = () => {
-        minimizeTab("Winamp");
-        setActiveApp(null);
-      };
-
-      minimizeBtn.addEventListener("click", handleClick);
-
-      return () => {
-        minimizeBtn.removeEventListener("click", handleClick);
-      };
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      minimizeWinamp();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  // close Winamp from its own header
-  const closeWinamp = () => {
-    const closeBtn = document.querySelector("#webamp #title-bar #close");
-
-    if (closeBtn) {
-      const handleClick = () => {
-        closeTab("Winamp");
-        setActiveApp(null);
-      };
-
-      closeBtn.addEventListener("click", handleClick);
-
-      return () => {
-        closeBtn.removeEventListener("click", handleClick);
-      };
-    }
-  };
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      closeWinamp();
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, []);
-
   console.log("opened apps:", openedApps);
   console.log("active app after double desktop icon click:", activeApp);
 
@@ -269,6 +291,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setIsTabDragging,
         fromNavbar,
         isNavbarTabClicked,
+        addTab,
       }}
     >
       {children}

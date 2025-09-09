@@ -5,6 +5,7 @@ import {
   availableSkins,
   windowLayout,
 } from "../webamp-options/options";
+import { useApp } from "../context/AppContext";
 
 interface WinampProps {
   reopen: boolean;
@@ -15,7 +16,7 @@ interface WinampProps {
 function Winamp({ reopen, close, cb }: WinampProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const webamp = useRef<Webamp | null>(null);
-
+  const { closeTab, minimizeTab, setActiveApp } = useApp();
   useEffect(() => {
     const target = ref.current;
     if (!target) {
@@ -46,13 +47,42 @@ function Winamp({ reopen, close, cb }: WinampProps) {
       enableHotkeys: true,
     });
 
-    // webamp.current.renderWhenReady(target)
-
     webamp.current.renderWhenReady(target).then(() => {
       const webampEl = document.querySelector("#webamp");
-      if (webampEl) {
-        target.appendChild(webampEl);
-      }
+      if (!webampEl) return;
+      target.appendChild(webampEl);
+
+      const closeBtn = webampEl.querySelector("#title-bar #close");
+      const minimizeBtn = webampEl.querySelector(
+        "#webamp #title-bar #minimize"
+      );
+
+      console.log("close btn:", closeBtn);
+      console.log("minimize btn:", minimizeBtn);
+
+      if (!closeBtn) return;
+      if (!minimizeBtn) return;
+
+      // close Winamp from its own header
+      const handleClickClose = () => {
+        closeTab("Winamp");
+        setActiveApp(null);
+        console.log("close button clicked!");
+      };
+      // minimize Winamp from its own header
+      const handleClickMinimize = () => {
+        minimizeTab("Winamp");
+        setActiveApp(null);
+        console.log("minimize button clicked!");
+      };
+
+      closeBtn.addEventListener("click", handleClickClose);
+      minimizeBtn.addEventListener("click", handleClickMinimize);
+
+      return () => {
+        closeBtn.removeEventListener("click", handleClickClose);
+        minimizeBtn.removeEventListener("click", handleClickMinimize);
+      };
     });
 
     return () => {

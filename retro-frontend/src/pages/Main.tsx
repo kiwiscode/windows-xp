@@ -20,6 +20,7 @@ const Main = () => {
     setActiveApp,
     openedApps,
     setOpenedApps,
+    addTab,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
@@ -186,28 +187,11 @@ const Main = () => {
               <div
                 onDoubleClick={() => {
                   setClickedAppId(null);
-                  if (activeApp !== app.title) {
-                    // BUG
+                  const exists = openedApps.some((a) => a.title === app.title);
+                  if (!exists) {
+                    addTab(app.title);
+                  } else {
                     setActiveApp(app.title);
-                    // setOpenedApps((prev) => {
-                    //   return [
-                    //     ...prev,
-                    //     {
-                    //       id: generateId(),
-                    //       zIndex: generateIndex(),
-                    //       title: "Winamp",
-                    //       icon: "/desktop-icons/Winamp-logo.png",
-                    //       minimized: false,
-                    //       maximize: false,
-                    //       showHeader: false,
-                    //       children: "winamp",
-                    //       programType: "winamp",
-                    //       prompt: false,
-                    //       x: width / 2,
-                    //       y: height * 0.4,
-                    //     },
-                    //   ];
-                    // });
                   }
                 }}
                 onContextMenu={(e) => handleContextMenu(e, app.title)}

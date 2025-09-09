@@ -20,6 +20,7 @@ const OpenedApp = (props: AppType) => {
     isNavbarTabClicked,
   } = useApp();
   const { width } = useWindowDimensions();
+  const isMobile = width <= 768;
   const [showWinamp, setShowMinamp] = useState<boolean>(false);
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const tabRef = useRef<HTMLDivElement>(null);
@@ -105,33 +106,25 @@ const OpenedApp = (props: AppType) => {
         setActiveApp(props.title);
       }}
       style={{
-        left: !props.showHeader
-          ? 0
-          : props.maximize || width <= 768
-          ? 0
-          : props.x,
+        left: !props.showHeader ? 0 : props.maximize || isMobile ? 0 : props.x,
 
-        top: !props.showHeader
-          ? 0
-          : props.maximize || width <= 768
-          ? 0
-          : props.y,
+        top: !props.showHeader ? 0 : props.maximize || isMobile ? 0 : props.y,
 
         width: !props.showHeader
           ? "auto"
-          : props.maximize || width <= 768
+          : props.maximize || isMobile
           ? window.innerWidth - 3
           : "700px",
 
         height: !props.showHeader
           ? "auto"
-          : props.maximize || width <= 768
+          : props.maximize || isMobile
           ? window.innerHeight - 36
           : "500px",
 
         transform: !props.showHeader
           ? "translate(0px, 0px)"
-          : props.maximize || width <= 768
+          : props.maximize || isMobile
           ? undefined
           : "translate(-50%, -50%)",
 
@@ -142,8 +135,8 @@ const OpenedApp = (props: AppType) => {
         backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
         display: !props.minimized ? "flex" : "none",
         flexDirection: "column",
-        borderTopLeftRadius: props.maximize || width <= 768 ? "0px" : "8px",
-        borderTopRightRadius: props.maximize || width <= 768 ? "0px" : "8px",
+        borderTopLeftRadius: props.maximize || isMobile ? "0px" : "8px",
+        borderTopRightRadius: props.maximize || isMobile ? "0px" : "8px",
       }}
     >
       {/* holder header */}
@@ -232,7 +225,7 @@ const OpenedApp = (props: AppType) => {
               className="tab-minimise"
             />
           )}
-          {!props.prompt && width > 768 && (
+          {!props.prompt && !isMobile && (
             <div
               onClick={() => maximizeTab(props.title)}
               style={{
