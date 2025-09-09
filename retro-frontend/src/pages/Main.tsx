@@ -1,17 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "../context/AppContext";
-import type { AppItem } from "../types/AppItem";
-import Winamp from "../components/Winamp";
-import { initialApps } from "../data/initialApps";
+import { desktopApps } from "../data/desktopApps";
 import OpenedApp from "../components/App";
+import Footer from "../components/Footer";
+import BlueScreen from "../components/BlueScreen";
+import type { DesktopApp } from "../types/DesktopApp";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
-  const [showWinamp, setShowMinamp] = useState<boolean>(false);
-
-  const winampCallback = (data: boolean) => {
-    setShowMinamp(data);
-  };
 
   const [bgIndex, setBgIndex] = useState(0);
   const {
@@ -21,7 +17,6 @@ const Main = () => {
     apps,
     setApps,
     setActiveApp,
-    fromNavbar,
     openedApps,
   } = useApp();
 
@@ -103,7 +98,7 @@ const Main = () => {
 
   const handleSortByName = () => {
     setIsDragging(false);
-    setApps(initialApps);
+    setApps(desktopApps);
     setMenuVisible(false);
   };
 
@@ -129,7 +124,7 @@ const Main = () => {
         if (recycleBinSoundRef.current) {
           recycleBinSoundRef.current.play();
         }
-        setRecycled((prev: AppItem[]) => [...prev, movedApp]);
+        setRecycled((prev: DesktopApp[]) => [...prev, movedApp]);
         setApps((prev) => prev.filter((app) => app.title !== selectedAppTitle));
       }
     }
@@ -161,206 +156,204 @@ const Main = () => {
 
   return (
     <div
-      className="h-screen w-full bg-cover bg-center relative"
-      style={{ backgroundImage: `url(${bgImages[bgIndex]})` }}
-      onClick={() => {
-        fromNavbar(false);
-        handleAppClick(null);
+      className="h-full overflow-hidden relative bg-cover bg-no-repeat bg-fixed"
+      style={{
+        backgroundImage: `url(${bgImages[bgIndex]}) `,
       }}
-      onContextMenu={(e) => handleContextMenu(e, null)}
     >
-      {apps.map((app) => (
-        <div
-          onDoubleClick={() => {
-            setClickedAppId(null);
-            setActiveApp(app.title);
-            if (app.id === 6) {
-              setShowMinamp(true);
-            }
-          }}
-          onContextMenu={(e) => handleContextMenu(e, app.title)}
-          key={app.id}
-          className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
-          style={{
-            left: app.x,
-            top: app.y,
-            zIndex: clickedAppId === app.id ? 11 : 10,
-            transition: !isDragging ? "all 0.3s" : "none",
-          }}
-          onMouseDown={(e) => {
-            handleAppClick(app.id);
-            handleMouseDown(e, app.id);
-          }}
-          onClick={(e) => {
-            e.stopPropagation();
-            handleAppClick(app.id);
-          }}
-        >
-          <img
-            src={app.icon}
-            alt={app.title}
-            className="w-[32px] h-[32px] mb-1"
-          />
-          <span
-            className={`text-white px-1 text-[12px] text-center flex ${
-              clickedAppId === app.id ? "bg-[#0d61ff]" : ""
-            }`}
-          >
-            {app.title}
-          </span>
-        </div>
-      ))}
-
-      <div className="bg-black" ref={menuRef}>
-        {menuVisible && !selectedAppTitle ? (
+      {/* <BlueScreen show={false} /> */}
+      <div>
+        {/* desktop apps */}
+        {apps.map((app) => (
           <div
-            className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
+            onDoubleClick={() => {
+              setClickedAppId(null);
+              setActiveApp(app.title);
+              // if (app.id === 6) {
+              //   setShowMinamp(true);
+              // }
+            }}
+            onContextMenu={(e) => handleContextMenu(e, app.title)}
+            key={app.id}
+            className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
             style={{
-              top: menuY,
-              left: menuX,
-              fontFamily: 'Arial, "Open Sans", sans-serif',
+              left: app.x,
+              top: app.y,
+              zIndex: clickedAppId === app.id ? 11 : 10,
+              transition: !isDragging ? "all 0.3s" : "none",
+            }}
+            onMouseDown={(e) => {
+              handleAppClick(app.id);
+              handleMouseDown(e, app.id);
+            }}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAppClick(app.id);
             }}
           >
-            <ul
-              onMouseLeave={() => setHoveredMenu("")}
-              className="list-none text-[13px] mt-2 p-0
-            "
+            <img
+              src={app.icon}
+              alt={app.title}
+              className="w-[32px] h-[32px] mb-1"
+            />
+            <span
+              className={`text-white px-1 text-[12px] text-center flex ${
+                clickedAppId === app.id ? "bg-[#0d61ff]" : ""
+              }`}
             >
-              <li
-                onMouseLeave={() => setHoveredMenu("")}
-                onMouseEnter={() => setHoveredMenu("view")}
-                className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
-                onClick={() => setMenuVisible(false)}
-              >
-                View
-              </li>
-              <li
-                className="relative text-black p-0 mr-1 mx-1"
-                onMouseEnter={() => setHoveredMenu("sortBy")}
-                onMouseLeave={() => setHoveredMenu("")}
-              >
-                <div className="hover:bg-[#1a6ebf] hover:text-white rounded-sm cursor-pointer text-black py-2 px-10">
-                  Sort By
-                </div>
-
-                {hoveredMenu === "sortBy" && (
-                  <ul
-                    className="absolute top-0 left-full bg-[#f9f9f9] rounded-md min-w-[180px] text-black z-50 list-none text-[13px] p-2 m-0"
-                    onMouseEnter={() => setHoveredMenu("sortBy")}
-                    onMouseLeave={() => setHoveredMenu("")}
-                  >
-                    <li
-                      className="hover:bg-[#1a6ebf] hover:text-white rounded-sm cursor-pointer text-black py-2 px-10"
-                      onClick={handleSortByName}
-                    >
-                      Name
-                    </li>
-                  </ul>
-                )}
-              </li>
-
-              <li
-                onMouseLeave={() => setHoveredMenu("")}
-                onMouseEnter={() => setHoveredMenu("refresh")}
-                className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer text-black py-2 px-10 mx-1"
-                onClick={() => {
-                  setApps([]);
-                  setTimeout(() => {
-                    setApps(initialApps);
-                  }, 150);
-                  setMenuVisible(false);
-                }}
-              >
-                Refresh
-              </li>
-              <div className="bg-[#f2f2f2] h-[2px] w-[95%] mx-auto"></div>
-            </ul>
+              {app.title}
+            </span>
           </div>
-        ) : menuVisible && selectedAppTitle ? (
-          <div
-            className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
-            style={{
-              top: menuY,
-              left: menuX,
-              fontFamily: 'Arial, "Open Sans", sans-serif',
-            }}
-          >
-            <ul className="list-none text-[13px] mt-2 p-0 mx-1">
-              <li
-                className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
-                onClick={handleRename}
+        ))}
+
+        {/* right click options */}
+        <div className="bg-black" ref={menuRef}>
+          {menuVisible && !selectedAppTitle ? (
+            <div
+              className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
+              style={{
+                top: menuY,
+                left: menuX,
+                fontFamily: 'Arial, "Open Sans", sans-serif',
+              }}
+            >
+              <ul
+                onMouseLeave={() => setHoveredMenu("")}
+                className="list-none text-[13px] mt-2 p-0
+            "
               >
-                Rename
-              </li>
-              {selectedAppTitle !== "Recycle Bin" ? (
+                <li
+                  onMouseLeave={() => setHoveredMenu("")}
+                  onMouseEnter={() => setHoveredMenu("view")}
+                  className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
+                  onClick={() => setMenuVisible(false)}
+                >
+                  View
+                </li>
+                <li
+                  className="relative text-black p-0 mr-1 mx-1"
+                  onMouseEnter={() => setHoveredMenu("sortBy")}
+                  onMouseLeave={() => setHoveredMenu("")}
+                >
+                  <div className="hover:bg-[#1a6ebf] hover:text-white rounded-sm cursor-pointer text-black py-2 px-10">
+                    Sort By
+                  </div>
+
+                  {hoveredMenu === "sortBy" && (
+                    <ul
+                      className="absolute top-0 left-full bg-[#f9f9f9] rounded-md min-w-[180px] text-black z-50 list-none text-[13px] p-2 m-0"
+                      onMouseEnter={() => setHoveredMenu("sortBy")}
+                      onMouseLeave={() => setHoveredMenu("")}
+                    >
+                      <li
+                        className="hover:bg-[#1a6ebf] hover:text-white rounded-sm cursor-pointer text-black py-2 px-10"
+                        onClick={handleSortByName}
+                      >
+                        Name
+                      </li>
+                    </ul>
+                  )}
+                </li>
+
+                <li
+                  onMouseLeave={() => setHoveredMenu("")}
+                  onMouseEnter={() => setHoveredMenu("refresh")}
+                  className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer text-black py-2 px-10 mx-1"
+                  onClick={() => {
+                    setApps([]);
+                    setTimeout(() => {
+                      setApps(desktopApps);
+                    }, 150);
+                    setMenuVisible(false);
+                  }}
+                >
+                  Refresh
+                </li>
+                <div className="bg-[#f2f2f2] h-[2px] w-[95%] mx-auto"></div>
+              </ul>
+            </div>
+          ) : menuVisible && selectedAppTitle ? (
+            <div
+              className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
+              style={{
+                top: menuY,
+                left: menuX,
+                fontFamily: 'Arial, "Open Sans", sans-serif',
+              }}
+            >
+              <ul className="list-none text-[13px] mt-2 p-0 mx-1">
                 <li
                   className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
-                  onClick={handleMoveToBin}
+                  onClick={handleRename}
                 >
-                  Move to Bin
+                  Rename
                 </li>
-              ) : (
-                <>
-                  {recycled && recycled.length > 0 ? (
-                    <li
-                      className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
-                      onClick={() => {
-                        if (recycleBinSoundRef.current) {
-                          recycleBinSoundRef.current.play();
-                        }
-                        emptyBin();
-                        setMenuVisible(false);
-                        setSelectedAppTitle(null);
-                      }}
-                    >
-                      Empty bin
-                    </li>
-                  ) : null}
-                </>
-              )}
-            </ul>
-          </div>
-        ) : null}
+                {selectedAppTitle !== "Recycle Bin" ? (
+                  <li
+                    className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
+                    onClick={handleMoveToBin}
+                  >
+                    Move to Bin
+                  </li>
+                ) : (
+                  <>
+                    {recycled && recycled.length > 0 ? (
+                      <li
+                        className="hover:bg-[#1a6ebf] rounded-sm hover:text-white cursor-pointer relative text-black py-2 px-10 mx-1"
+                        onClick={() => {
+                          if (recycleBinSoundRef.current) {
+                            recycleBinSoundRef.current.play();
+                          }
+                          emptyBin();
+                          setMenuVisible(false);
+                          setSelectedAppTitle(null);
+                        }}
+                      >
+                        Empty bin
+                      </li>
+                    ) : null}
+                  </>
+                )}
+              </ul>
+            </div>
+          ) : null}
+        </div>
+        <audio
+          ref={recycleBinSoundRef}
+          src="/sounds/windows-xp-recycle-bin.mp3"
+        />
       </div>
 
-      <audio
-        ref={recycleBinSoundRef}
-        src="/sounds/windows-xp-recycle-bin.mp3"
-      />
+      {/* app comtent */}
+      <div className="relative z-0">
+        {openedApps.map((t, i) => {
+          if (t.minimized) return null;
 
-      {openedApps.map((t, i) => {
-        if (t.minimized || t.programType === "winamp") {
           return (
-            <Winamp
+            <OpenedApp
               key={t.id || i}
-              close={showWinamp}
-              reopen={showWinamp}
-              cb={winampCallback}
-            />
+              id={t.id}
+              title={t.title}
+              icon={t.icon}
+              zIndex={t.zIndex}
+              showHeader={t.showHeader}
+              programType={t.programType}
+              minimized={t.minimized}
+              maximize={t.maximize}
+              prompt={t.prompt}
+              x={t.x}
+              y={t.y}
+              targetX={t.targetX}
+              targetY={t.targetY}
+              measurements={tabMeasurements[i]}
+            >
+              {t.children}
+            </OpenedApp>
           );
-        }
+        })}
+      </div>
 
-        return (
-          <OpenedApp
-            key={t.id}
-            id={t.id}
-            title={t.title}
-            icon={t.icon}
-            zIndex={t.zIndex}
-            programType={t.programType}
-            minimized={t.minimized}
-            maximize={t.maximize}
-            prompt={t.prompt}
-            x={t.x}
-            y={t.y}
-            targetX={t.targetX}
-            targetY={t.targetY}
-            measurements={tabMeasurements[i]}
-          >
-            {t.children}
-          </OpenedApp>
-        );
-      })}
+      <Footer />
     </div>
   );
 };
