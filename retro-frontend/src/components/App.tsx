@@ -2,6 +2,7 @@ import TabNavbar from "./TabNavbar";
 import type { App as AppType } from "../types/App";
 import { useApp } from "../context/AppContext";
 import { useEffect, useRef, useState } from "react";
+import Winamp from "./Winamp";
 
 const unfocusedAdjustment = "brightness(1.05)";
 const OpenedApp = (props: AppType) => {
@@ -18,12 +19,15 @@ const OpenedApp = (props: AppType) => {
     isNavbarTabClicked,
   } = useApp();
 
+  const [showWinamp, setShowMinamp] = useState<boolean>(false);
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const tabRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     setIsTabDragging(true);
+
+    console.log("tab id:", id);
 
     const isTabExist = openedApps.find((t) => t.id === id);
     if (!isTabExist) return;
@@ -71,6 +75,10 @@ const OpenedApp = (props: AppType) => {
     document.addEventListener("mouseup", handleMouseUp);
   };
 
+  const winampCallback = (data: boolean) => {
+    setShowMinamp(data);
+  };
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isNavbarTabClicked) return;
@@ -96,20 +104,32 @@ const OpenedApp = (props: AppType) => {
         setActiveApp(props.title);
       }}
       style={{
-        left: props.maximize ? 0 : props.x,
+        left: !props.showHeader ? 0 : props.maximize ? 0 : props.x,
 
-        top: props.maximize ? 0 : props.y,
+        top: !props.showHeader ? 0 : props.maximize ? 0 : props.y,
 
-        transform: props.maximize ? undefined : "translate(-50%, -50%)",
+        width: !props.showHeader
+          ? "auto"
+          : props.maximize
+          ? window.innerWidth - 3
+          : "700px",
 
-        width: props.maximize ? window.innerWidth - 3 : "700px",
+        height: !props.showHeader
+          ? "auto"
+          : props.maximize
+          ? window.innerHeight - 36
+          : "500px",
 
-        height: props.maximize ? window.innerHeight - 36 : "500px",
+        transform: !props.showHeader
+          ? "translate(0px, 0px)"
+          : props.maximize
+          ? undefined
+          : "translate(-50%, -50%)",
 
         zIndex: props.zIndex,
         // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
         position: "absolute",
-        padding: "3px",
+        padding: !props.showHeader ? 0 : "3px",
         backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
         display: "flex",
         flexDirection: "column",
@@ -119,7 +139,7 @@ const OpenedApp = (props: AppType) => {
     >
       {/* holder header */}
       <div
-        className={`
+        className={`header__bg 
     absolute
     after:block
     before:content-['']
@@ -158,7 +178,8 @@ const OpenedApp = (props: AppType) => {
         }}
       />
       {/* real header */}
-      <div
+
+      <header
         onMouseDown={(e) => {
           handleMouseDown(e, props.id);
         }}
@@ -166,9 +187,9 @@ const OpenedApp = (props: AppType) => {
           e.stopPropagation();
           maximizeTab(props.title);
         }}
-        className={
-          "flex h-[25px] leading-[25px] font-bold text-[12px] text-white absolute left-[3px] right-[3px] items-center"
-        }
+        className={`app__header ${
+          !props.showHeader ? "hidden" : "flex"
+        }  h-[25px] leading-[25px] font-bold text-[12px] text-white absolute left-[3px] right-[3px] items-center`}
         style={{
           textShadow: "1px 1px #000",
         }}
@@ -219,27 +240,27 @@ const OpenedApp = (props: AppType) => {
             className="tab-close"
           />
         </div>
-      </div>
+      </header>
 
       <div
-        className="flex-1 relative mt-[25px]"
+        className="app__content flex-1 relative mt-[25px]"
         style={{
           height: "calc(100% - 25px)",
         }}
       >
-        <div className="h-full w-full absolute flex overflow-hidden flex-col bg-[linear-gradient(to_right,#edede5_0%,#ede8cd_100%)]">
-          {/* tab navbar */}
-          {!props.prompt && (
-            <TabNavbar
-              title={props.title}
-              icon={props.icon}
-              programType={props.programType}
-            />
-          )}
+        {props.title === "Winamp" ? (
+          <Winamp reopen={showWinamp} close={showWinamp} cb={winampCallback} />
+        ) : (
+          <div className="h-full w-full absolute flex overflow-hidden flex-col bg-[linear-gradient(to_right,#edede5_0%,#ede8cd_100%)]">
+            {/* tab navbar */}
+            {!props.prompt && (
+              <TabNavbar title={props.title} icon={props.icon} />
+            )}
 
-          {/* tab content */}
-          {props.children}
-        </div>
+            {/* tab content */}
+            {props.children}
+          </div>
+        )}
       </div>
     </div>
   );
