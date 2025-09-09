@@ -160,6 +160,13 @@ body {
   @apply bg-cover bg-center w-[22px] h-[22px] mr-[1px];
 }
 
+.tab-minimise:hover,
+.tab-resize:hover,
+.tab-maximise:hover,
+.tab-close:hover {
+  filter: brightness(120%);
+}
+
 .tab-resize {
   background-image: url("/tab-icons/resize.png");
 }
@@ -171,13 +178,6 @@ body {
 }
 .tab-close {
   background-image: url("/tab-icons/close.png");
-}
-
-.tab-minimise:hover,
-.tab-resize:hover,
-.tab-maximise:hover,
-.tab-close:hover {
-  filter: brightness(120%);
 }
 
 .nav-btn-tab {
@@ -201,13 +201,28 @@ body {
   transform: translate(1px, 1px);
 }
 
-/* #webamp {
-  z-index: 30 !important;
-} */
+/* delete confusing minimize btn (optional) */
+/* #webamp #title-bar {
+  -webkit-mask-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' width='275' height='14' viewBox='0 0 275 14'>\
+    <rect x='0' y='0' width='275' height='14' fill='white'/>\
+    <!-- Delik: x=244 y=3 width=9 height=9 -->\
+    <rect x='244' y='3' width='9' height='9' fill='black'/>\
+  </svg>");
+  -webkit-mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  -webkit-mask-size: 275px 14px;
 
-#webamp .hide {
-  display: none;
-}
+  mask-image: url("data:image/svg+xml;utf8,\
+  <svg xmlns='http://www.w3.org/2000/svg' width='275' height='14' viewBox='0 0 275 14'>\
+    <rect x='0' y='0' width='275' height='14' fill='white'/>\
+    <rect x='244' y='3' width='9' height='9' fill='black'/>\
+  </svg>");
+  mask-repeat: no-repeat;
+  mask-position: 0 0;
+  mask-size: 275px 14px;
+  mask-mode: luminance;
+} */
 
 #main-window,
 #equalizer-window,

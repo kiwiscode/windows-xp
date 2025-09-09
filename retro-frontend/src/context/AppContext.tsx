@@ -195,7 +195,31 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
-  console.log("opened apps:", openedApps);
+  // minimize Winamp from its own header
+  const minimizeWinamp = () => {
+    const minimizeBtn = document.querySelector("#webamp #title-bar #minimize");
+
+    if (minimizeBtn) {
+      const handleClick = () => {
+        minimizeTab("Winamp");
+        setActiveApp(null);
+      };
+
+      minimizeBtn.addEventListener("click", handleClick);
+
+      return () => {
+        minimizeBtn.removeEventListener("click", handleClick);
+      };
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      minimizeWinamp();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
     <AppContext.Provider
