@@ -8,8 +8,31 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body {
+@font-face {
+  font-family: "Tahoma-V1";
+  src: url("/fonts/Tahoma-V1.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Tahoma-Bold-V1";
+  src: url("/fonts/Tahoma-Bold-V1.woff") format("woff");
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body,
+#root {
+  height: 100%;
   margin: 0;
+}
+
+body {
+  font-family: "Tahoma-V1", sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));

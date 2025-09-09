@@ -5,19 +5,18 @@ import React, {
   useState,
   type ReactNode,
 } from "react";
-import type { AppItem } from "../types/AppItem";
+import type { DesktopApp } from "../types/DesktopApp";
 import type { App as AppType } from "../types/App";
 import Recycle from "../tabContent/Recycle";
 import MyComputer from "../tabContent/MyComputer";
 import useWindowDimensions from "../hooks/useWindowDimensions";
-import { initialApps } from "../data/initialApps";
-import { toTheFront } from "../utils/nonTabRecognizer";
+import { desktopApps } from "../data/desktopApps";
 
 interface AppContextType {
-  recycled: AppItem[];
-  setRecycled: React.Dispatch<React.SetStateAction<AppItem[]>>;
-  apps: AppItem[];
-  setApps: React.Dispatch<React.SetStateAction<AppItem[]>>;
+  recycled: DesktopApp[];
+  setRecycled: React.Dispatch<React.SetStateAction<DesktopApp[]>>;
+  apps: DesktopApp[];
+  setApps: React.Dispatch<React.SetStateAction<DesktopApp[]>>;
   activeApp: string | null;
   setActiveApp: React.Dispatch<React.SetStateAction<string | null>>;
   openedApps: AppType[];
@@ -38,11 +37,22 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
+const generate = () => {
+  let id = -1;
+  return () => {
+    id += 1;
+    return id;
+  };
+};
+
+const generateId = generate();
+const generateIndex = generate();
+
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
-  const [apps, setApps] = useState<AppItem[]>(initialApps);
-  const [recycled, setRecycled] = useState<AppItem[]>([]);
+  const [apps, setApps] = useState<DesktopApp[]>(desktopApps);
+  const [recycled, setRecycled] = useState<DesktopApp[]>([]);
   const [activeApp, setActiveApp] = useState<string | null>(null);
   const [openedApps, setOpenedApps] = useState<AppType[]>([]);
   const [isNavbarTabClicked, setIsNavbarTabClicked] = useState<boolean>(false);
@@ -51,6 +61,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
   const { width, height } = useWindowDimensions();
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
+
   const emptyBin = () => {
     setRecycled([]);
   };
@@ -109,12 +120,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         return [
           ...prev,
           {
-            id: 6,
+            id: generateId(),
+            zIndex: generateIndex(),
             title: "Winamp",
             icon: "/desktop-icons/Winamp-logo.png",
             minimized: false,
             maximize: false,
-            zIndex: 3,
+            showHeader: false,
             children: "winamp",
             programType: "winamp",
             prompt: false,
@@ -122,12 +134,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             y: height * 0.4,
           },
           {
-            id: 2,
+            id: generateId(),
+            zIndex: generateIndex(),
             title: "My Computer",
             icon: "/desktop-icons/this-pc.ico",
             minimized: false,
             maximize: false,
-            zIndex: 2,
+            showHeader: true,
             children: <MyComputer />,
             programType: "my computer",
             prompt: false,
@@ -135,12 +148,13 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             y: height * 0.4,
           },
           {
-            id: 3,
+            id: generateId(),
+            zIndex: generateIndex(),
             title: "Recycle Bin",
             icon: "/desktop-icons/recycle-bin.ico",
             minimized: false,
             maximize: false,
-            zIndex: 1,
+            showHeader: true,
             children: <Recycle />,
             programType: "recycle",
             prompt: false,
@@ -155,80 +169,17 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   }, []);
 
   useEffect(() => {
-    // toTheFront(activeApp);
+    if (!activeApp) return;
 
-    if (activeApp === "Winamp") {
-      setOpenedApps((prev) => {
-        const exists = prev.some((tab) => tab.id === 6);
-        if (exists) return prev;
-
-        return [
-          ...prev,
-          {
-            id: 6,
-            title: "Winamp",
-            icon: "/desktop-icons/Winamp-logo.png",
-            minimized: false,
-            maximize: false,
-            zIndex: 0,
-            children: "winamp",
-            programType: "winamp",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
-        ];
-      });
-    }
-
-    if (activeApp === "My Computer") {
-      setOpenedApps((prev) => {
-        const exists = prev.some((tab) => tab.id === 2);
-        if (exists) return prev;
-
-        return [
-          ...prev,
-          {
-            id: 2,
-            title: "My Computer",
-            icon: "/desktop-icons/this-pc.ico",
-            minimized: false,
-            maximize: false,
-            zIndex: 0,
-            children: <MyComputer />,
-            programType: "my computer",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
-        ];
-      });
-    }
-
-    if (activeApp === "Recycle Bin") {
-      setOpenedApps((prev) => {
-        const exists = prev.some((tab) => tab.id === 3);
-        if (exists) return prev;
-
-        return [
-          ...prev,
-          {
-            id: 3,
-            title: "Recycle Bin",
-            icon: "/desktop-icons/recycle-bin.ico",
-            minimized: false,
-            maximize: false,
-            zIndex: 0,
-            children: <Recycle />,
-            programType: "recycle",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
-        ];
-      });
-    }
-  }, [activeApp, width, height]);
+    setOpenedApps((prev) =>
+      prev.map((tab) => {
+        if (tab.title === activeApp) {
+          return { ...tab, zIndex: generateIndex(), minimized: false };
+        }
+        return tab;
+      })
+    );
+  }, [activeApp]);
 
   useEffect(() => {
     if (activeApp == null || isTabDragging) return;
@@ -245,7 +196,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   };
 
   console.log("opened apps:", openedApps);
-  console.log("active app:", activeApp);
+
   return (
     <AppContext.Provider
       value={{
