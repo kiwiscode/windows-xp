@@ -17,7 +17,7 @@ const MyComputer = () => {
   const [closedTabs, setCloseTabs] = useState<closedTab[]>([]);
   return (
     <div
-      className="flex-1 border-t-0 bg-[#f1f1f1] overflow-auto text-[11px] relative"
+      className="com__content flex-1 border-t-0 bg-[#f1f1f1] overflow-auto text-[11px] relative"
       style={{
         border: "1px solid rgba(0,0,0,0.4)",
       }}
