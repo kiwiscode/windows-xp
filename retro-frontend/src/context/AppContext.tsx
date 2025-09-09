@@ -144,7 +144,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             zIndex: generateIndex(),
             title: "My Computer",
             icon: "/desktop-icons/this-pc.ico",
-            minimized: isMobile ? true : false,
+            minimized: false,
             maximize: isMobile ? true : false,
             showHeader: true,
             children: <MyComputer />,
@@ -161,7 +161,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             zIndex: generateIndex(),
             title: "Recycle Bin",
             icon: "/desktop-icons/recycle-bin.ico",
-            minimized: isMobile ? true : false,
+            minimized: false,
             maximize: isMobile ? true : false,
             showHeader: true,
             children: <Recycle />,
@@ -178,6 +178,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       return newApp ? [...prev, newApp] : prev;
     });
+    setActiveApp(appTitle);
   };
 
   const closeTab = (appTitle: string | null) => {
