@@ -3,6 +3,7 @@ import type { App as AppType } from "../types/App";
 import { useApp } from "../context/AppContext";
 import { useEffect, useRef, useState } from "react";
 import Winamp from "./Winamp";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 
 const unfocusedAdjustment = "brightness(1.05)";
 const OpenedApp = (props: AppType) => {
@@ -18,7 +19,7 @@ const OpenedApp = (props: AppType) => {
     setIsTabDragging,
     isNavbarTabClicked,
   } = useApp();
-
+  const { width } = useWindowDimensions();
   const [showWinamp, setShowMinamp] = useState<boolean>(false);
   const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const tabRef = useRef<HTMLDivElement>(null);
@@ -104,25 +105,33 @@ const OpenedApp = (props: AppType) => {
         setActiveApp(props.title);
       }}
       style={{
-        left: !props.showHeader ? 0 : props.maximize ? 0 : props.x,
+        left: !props.showHeader
+          ? 0
+          : props.maximize || width <= 768
+          ? 0
+          : props.x,
 
-        top: !props.showHeader ? 0 : props.maximize ? 0 : props.y,
+        top: !props.showHeader
+          ? 0
+          : props.maximize || width <= 768
+          ? 0
+          : props.y,
 
         width: !props.showHeader
           ? "auto"
-          : props.maximize
+          : props.maximize || width <= 768
           ? window.innerWidth - 3
           : "700px",
 
         height: !props.showHeader
           ? "auto"
-          : props.maximize
+          : props.maximize || width <= 768
           ? window.innerHeight - 36
           : "500px",
 
         transform: !props.showHeader
           ? "translate(0px, 0px)"
-          : props.maximize
+          : props.maximize || width <= 768
           ? undefined
           : "translate(-50%, -50%)",
 
@@ -133,8 +142,8 @@ const OpenedApp = (props: AppType) => {
         backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
         display: !props.minimized ? "flex" : "none",
         flexDirection: "column",
-        borderTopLeftRadius: props.maximize ? "0px" : "8px",
-        borderTopRightRadius: props.maximize ? "0px" : "8px",
+        borderTopLeftRadius: props.maximize || width <= 768 ? "0px" : "8px",
+        borderTopRightRadius: props.maximize || width <= 768 ? "0px" : "8px",
       }}
     >
       {/* holder header */}
@@ -223,7 +232,7 @@ const OpenedApp = (props: AppType) => {
               className="tab-minimise"
             />
           )}
-          {!props.prompt && (
+          {!props.prompt && width > 768 && (
             <div
               onClick={() => maximizeTab(props.title)}
               style={{

@@ -6,4 +6,5 @@ export type DesktopApp = {
   y: number;
   targetX?: number;
   targetY?: number;
+  show?: boolean;
 };

@@ -97,8 +97,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           ? {
               ...app,
               maximize: !app.maximize,
-              x: width / 2,
-              y: height * 0.4,
+              x: app.x,
+              y: app.y,
               minimized: false,
             }
           : app
@@ -125,7 +125,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             title: "Winamp",
             icon: "/desktop-icons/Winamp-logo.png",
             minimized: false,
-            maximize: false,
+            maximize: width <= 768 ? true : false,
             showHeader: false,
             children: "winamp",
             programType: "winamp",
@@ -138,8 +138,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             zIndex: generateIndex(),
             title: "My Computer",
             icon: "/desktop-icons/this-pc.ico",
-            minimized: false,
-            maximize: false,
+            minimized: width <= 768 ? true : false,
+            maximize: width <= 768 ? true : false,
             showHeader: true,
             children: <MyComputer />,
             programType: "my computer",
@@ -147,22 +147,30 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             x: width / 2,
             y: height * 0.4,
           },
-          {
-            id: generateId(),
-            zIndex: generateIndex(),
-            title: "Recycle Bin",
-            icon: "/desktop-icons/recycle-bin.ico",
-            minimized: false,
-            maximize: false,
-            showHeader: true,
-            children: <Recycle />,
-            programType: "recycle",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
         ];
       });
+
+      if (width > 768) {
+        setOpenedApps((prev) => {
+          return [
+            ...prev,
+            {
+              id: generateId(),
+              zIndex: generateIndex(),
+              title: "Recycle Bin",
+              icon: "/desktop-icons/recycle-bin.ico",
+              minimized: false,
+              maximize: false,
+              showHeader: true,
+              children: <Recycle />,
+              programType: "recycle",
+              prompt: false,
+              x: width / 2,
+              y: height * 0.4,
+            },
+          ];
+        });
+      }
     }
 
     setFirstLoad(false);
@@ -180,16 +188,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       })
     );
   }, [activeApp]);
-
-  useEffect(() => {
-    if (activeApp == null || isTabDragging) return;
-
-    setOpenedApps((prev) =>
-      prev.map((t) =>
-        t.id && !t.maximize ? { ...t, x: width / 2, y: height * 0.4 } : t
-      )
-    );
-  }, [width, height]);
 
   const fromNavbar = (data: boolean) => {
     setIsNavbarTabClicked(data);
@@ -220,6 +218,35 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  // close Winamp from its own header
+  const closeWinamp = () => {
+    const closeBtn = document.querySelector("#webamp #title-bar #close");
+
+    if (closeBtn) {
+      const handleClick = () => {
+        closeTab("Winamp");
+        setActiveApp(null);
+      };
+
+      closeBtn.addEventListener("click", handleClick);
+
+      return () => {
+        closeBtn.removeEventListener("click", handleClick);
+      };
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      closeWinamp();
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  console.log("opened apps:", openedApps);
+  console.log("active app after double desktop icon click:", activeApp);
 
   return (
     <AppContext.Provider

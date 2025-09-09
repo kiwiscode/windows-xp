@@ -16,8 +16,10 @@ const Main = () => {
     emptyBin,
     apps,
     setApps,
+    activeApp,
     setActiveApp,
     openedApps,
+    setOpenedApps,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
@@ -164,47 +166,83 @@ const Main = () => {
       {/* <BlueScreen show={false} /> */}
       <div>
         {/* desktop apps */}
+        <div
+          className="absolute w-full h-full"
+          onClick={() => setClickedAppId(null)}
+        >
+          {apps.map((app) => {
+            if (app.title === "Recycle Bin") {
+              if (recycled.length > 0) {
+                app.icon = "/desktop-icons/recycle-bin-full.ico";
+                app.show = true;
+              } else {
+                app.icon = "/desktop-icons/recycle-bin.ico";
+                app.show = true;
+              }
+            }
 
-        {apps.map((app) => (
-          <div
-            onDoubleClick={() => {
-              setClickedAppId(null);
-              setActiveApp(app.title);
-              // if (app.id === 6) {
-              //   setShowMinamp(true);
-              // }
-            }}
-            onContextMenu={(e) => handleContextMenu(e, app.title)}
-            key={app.id}
-            className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
-            style={{
-              left: app.x,
-              top: app.y,
-              transition: !isDragging ? "all 0.3s" : "none",
-            }}
-            onMouseDown={(e) => {
-              handleAppClick(app.id);
-              handleMouseDown(e, app.id);
-            }}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAppClick(app.id);
-            }}
-          >
-            <img
-              src={app.icon}
-              alt={app.title}
-              className="w-[32px] h-[32px] mb-1"
-            />
-            <span
-              className={`text-white px-1 text-[12px] text-center flex ${
-                clickedAppId === app.id ? "bg-[#0d61ff]" : ""
-              }`}
-            >
-              {app.title}
-            </span>
-          </div>
-        ))}
+            if ("show" in app && !app.show) return null;
+            return (
+              <div
+                onDoubleClick={() => {
+                  setClickedAppId(null);
+                  if (activeApp !== app.title) {
+                    // BUG
+                    setActiveApp(app.title);
+                    // setOpenedApps((prev) => {
+                    //   return [
+                    //     ...prev,
+                    //     {
+                    //       id: generateId(),
+                    //       zIndex: generateIndex(),
+                    //       title: "Winamp",
+                    //       icon: "/desktop-icons/Winamp-logo.png",
+                    //       minimized: false,
+                    //       maximize: false,
+                    //       showHeader: false,
+                    //       children: "winamp",
+                    //       programType: "winamp",
+                    //       prompt: false,
+                    //       x: width / 2,
+                    //       y: height * 0.4,
+                    //     },
+                    //   ];
+                    // });
+                  }
+                }}
+                onContextMenu={(e) => handleContextMenu(e, app.title)}
+                key={app.id}
+                className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
+                style={{
+                  left: app.x,
+                  top: app.y,
+                  transition: !isDragging ? "all 0.3s" : "none",
+                }}
+                onMouseDown={(e) => {
+                  handleAppClick(app.id);
+                  handleMouseDown(e, app.id);
+                }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleAppClick(app.id);
+                }}
+              >
+                <img
+                  src={app.icon}
+                  alt={app.title}
+                  className="w-[32px] h-[32px] mb-1"
+                />
+                <span
+                  className={`text-white px-1 text-[12px] text-center flex ${
+                    clickedAppId === app.id ? "bg-[#0d61ff]" : ""
+                  }`}
+                >
+                  {app.title}
+                </span>
+              </div>
+            );
+          })}
+        </div>
 
         {/* right click options */}
         <div className="bg-black" ref={menuRef}>
