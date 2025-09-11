@@ -3,6 +3,7 @@ import type { App as AppType } from "../types/App";
 import { useApp } from "../context/AppContext";
 import { useEffect, useRef, useState } from "react";
 import Winamp from "./Winamp";
+import Error from "./Error";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 
 const unfocusedAdjustment = "brightness(1.05)";
@@ -18,6 +19,7 @@ const OpenedApp = (props: AppType) => {
     isTabDragging,
     setIsTabDragging,
     isNavbarTabClicked,
+    globalErrorMessage,
   } = useApp();
   const { width } = useWindowDimensions();
   const isMobile = width <= 768;
@@ -28,8 +30,6 @@ const OpenedApp = (props: AppType) => {
   const handleMouseDown = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
     setIsTabDragging(true);
-
-    console.log("tab id:", id);
 
     const isTabExist = openedApps.find((t) => t.id === id);
     if (!isTabExist) return;
@@ -106,27 +106,52 @@ const OpenedApp = (props: AppType) => {
         setActiveApp(props.title);
       }}
       style={{
-        left: !props.showHeader ? 0 : props.maximize || isMobile ? 0 : props.x,
+        left:
+          props.title === "error" && isMobile
+            ? props.x
+            : !props.showHeader
+            ? 0
+            : props.maximize || isMobile
+            ? 0
+            : props.x,
 
-        top: !props.showHeader ? 0 : props.maximize || isMobile ? 0 : props.y,
+        top:
+          props.title === "error" && isMobile
+            ? props.y
+            : !props.showHeader
+            ? 0
+            : props.maximize || isMobile
+            ? 0
+            : props.y,
 
-        width: !props.showHeader
-          ? "auto"
-          : props.maximize || isMobile
-          ? window.innerWidth - 3
-          : "700px",
+        width:
+          props.title === "error" && !isMobile
+            ? "380px"
+            : props.title === "error" && isMobile
+            ? "290px"
+            : !props.showHeader
+            ? "auto"
+            : props.maximize || isMobile
+            ? window.innerWidth
+            : "700px",
 
-        height: !props.showHeader
-          ? "auto"
-          : props.maximize || isMobile
-          ? window.innerHeight - 36
-          : "500px",
+        height:
+          props.title === "error"
+            ? "auto"
+            : !props.showHeader
+            ? "auto"
+            : props.maximize || isMobile
+            ? window.innerHeight - 30
+            : "500px",
 
-        transform: !props.showHeader
-          ? "translate(0px, 0px)"
-          : props.maximize || isMobile
-          ? undefined
-          : "translate(-50%, -50%)",
+        transform:
+          props.title === "error" && isMobile
+            ? "translate(-50%, -50%)"
+            : !props.showHeader
+            ? "translate(0px, 0px)"
+            : props.maximize || isMobile
+            ? undefined
+            : "translate(-50%, -50%)",
 
         zIndex: props.zIndex,
         // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
@@ -187,6 +212,7 @@ const OpenedApp = (props: AppType) => {
         }}
         onDoubleClick={(e) => {
           e.stopPropagation();
+          if (props.resizable === false) return;
           maximizeTab(props.title);
         }}
         className={`app__header ${
@@ -209,33 +235,37 @@ const OpenedApp = (props: AppType) => {
           className="flex-1 pointer-events-none pr-[5px] overflow-hidden whitespace-nowrap overflow-ellipsis"
           style={{ textShadow: "1px 1px rgb(0 0 0)", letterSpacing: "0.5px" }}
         >
-          {props.title}
+          {props.title === "error" ? `C:\\` : props.title}
         </div>
 
         <div className="h-[22px] flex items-center mt-[-1px] mr-[1px]">
-          {!props.prompt && (
-            <div
-              onClick={() => {
-                setIsMinimizing(true);
-                minimizeTab(props.title);
-              }}
-              style={{
-                filter: activeApp == props.title ? "" : unfocusedAdjustment,
-              }}
-              className="tab-minimise"
-            />
-          )}
-          {!props.prompt && !isMobile && (
-            <div
-              onClick={() => maximizeTab(props.title)}
-              style={{
-                filter: activeApp == props.title ? "" : unfocusedAdjustment,
-              }}
-              className={props.maximize ? "tab-resize" : "tab-maximise"}
-            />
+          {props.resizable !== false && (
+            <>
+              {!props.prompt && (
+                <div
+                  onClick={() => {
+                    setIsMinimizing(true);
+                    minimizeTab(props.title);
+                  }}
+                  style={{
+                    filter: activeApp == props.title ? "" : unfocusedAdjustment,
+                  }}
+                  className="tab-minimise"
+                />
+              )}
+              {!props.prompt && !isMobile && (
+                <div
+                  onClick={() => maximizeTab(props.title)}
+                  style={{
+                    filter: activeApp == props.title ? "" : unfocusedAdjustment,
+                  }}
+                  className={props.maximize ? "tab-resize" : "tab-maximise"}
+                />
+              )}
+            </>
           )}
           <div
-            onClick={() => closeTab(props.title)}
+            onClick={() => closeTab(props.id)}
             style={{
               filter: activeApp == props.title ? "" : unfocusedAdjustment,
             }}
@@ -250,7 +280,12 @@ const OpenedApp = (props: AppType) => {
           height: "calc(100% - 25px)",
         }}
       >
-        {props.title === "Winamp" ? (
+        {props.title === "error" ? (
+          <Error
+            _onClose={() => closeTab(props.id)}
+            errorMessage={globalErrorMessage || "C:\\\nError UNKNOWN"}
+          />
+        ) : props.title === "Winamp" ? (
           <Winamp reopen={showWinamp} close={showWinamp} cb={winampCallback} />
         ) : (
           <div className="h-full w-full absolute flex overflow-hidden flex-col bg-[linear-gradient(to_right,#edede5_0%,#ede8cd_100%)]">

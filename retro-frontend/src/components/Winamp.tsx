@@ -57,9 +57,6 @@ function Winamp({ reopen, close, cb }: WinampProps) {
         "#webamp #title-bar #minimize"
       );
 
-      console.log("close btn:", closeBtn);
-      console.log("minimize btn:", minimizeBtn);
-
       if (!closeBtn) return;
       if (!minimizeBtn) return;
 
@@ -67,13 +64,11 @@ function Winamp({ reopen, close, cb }: WinampProps) {
       const handleClickClose = () => {
         closeTab("Winamp");
         setActiveApp(null);
-        console.log("close button clicked!");
       };
       // minimize Winamp from its own header
       const handleClickMinimize = () => {
         minimizeTab("Winamp");
         setActiveApp(null);
-        console.log("minimize button clicked!");
       };
 
       closeBtn.addEventListener("click", handleClickClose);

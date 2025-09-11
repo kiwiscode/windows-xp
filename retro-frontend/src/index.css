@@ -1,3 +1,25 @@
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+html,
+body {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Tahoma-V1", sans-serif;
+}
+
+*,
+*::after,
+*::before {
+  box-sizing: inherit;
+}
+
 @layer theme, base, components, utilities;
 
 @import "tailwindcss/theme.css" layer(theme);
@@ -22,17 +44,6 @@
   font-weight: bold;
   font-style: normal;
   font-display: swap;
-}
-
-html,
-body,
-#root {
-  height: 100%;
-  margin: 0;
-}
-
-body {
-  font-family: "Tahoma-V1", sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -275,4 +286,34 @@ body {
 
 .fadeOutRiskPopup {
   animation: fadeOutRiskPopup 0.3s ease-in forwards;
+}
+
+.menu_left img {
+  width: 30px;
+  height: 30px;
+}
+
+.menu_right img {
+  width: 22px;
+  height: 22px;
+}
+
+.menu_left .menu_item {
+  height: 34px;
+}
+
+.menu_right .menu_item {
+  height: 26px;
+  margin-bottom: 4px;
+  line-height: 13px;
+}
+
+.menu_right .menu_item:nth-child(-n + 5) .menu_item_text,
+.menu_left .menu_item:nth-child(-n + 2) .menu_item_text,
+.menu_left .menu_item:last-child .menu_item_text {
+  font-weight: 700;
+}
+
+.footer_item:hover {
+  background-color: rgba(60, 80, 210, 0.5);
 }

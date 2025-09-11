@@ -11,6 +11,7 @@ import Recycle from "../tabContent/Recycle";
 import MyComputer from "../tabContent/MyComputer";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import { desktopApps } from "../data/desktopApps";
+import { availableApps } from "../constants/availableApps";
 
 interface AppContextType {
   recycled: DesktopApp[];
@@ -26,12 +27,14 @@ interface AppContextType {
   restoreApp: (appTitle: string | null) => void;
   minimizeTab: (appTitle: string | null) => void;
   maximizeTab: (appTitle: string | null) => void;
-  closeTab: (appTitle: string | null) => void;
+  closeTab: (appTitle: string | number | null) => void;
   isTabDragging: boolean;
   setIsTabDragging: React.Dispatch<React.SetStateAction<boolean>>;
   fromNavbar: (param: boolean) => void;
   isNavbarTabClicked: boolean;
   addTab: (param: string) => void;
+  globalErrorMessage: string;
+  setGlobalErrorMessage: React.Dispatch<React.SetStateAction<string>>;
 }
 
 interface AppProviderProps {
@@ -54,15 +57,19 @@ const AppContext = createContext<AppContextType | undefined>(undefined);
 export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [apps, setApps] = useState<DesktopApp[]>(desktopApps);
   const [recycled, setRecycled] = useState<DesktopApp[]>([]);
-  const [activeApp, setActiveApp] = useState<string | null>(null);
+  const { width, height } = useWindowDimensions();
+  const isMobile = width <= 768;
+  const [activeApp, setActiveApp] = useState<string | null>(
+    isMobile ? "Winamp" : "My Computer"
+  );
   const [openedApps, setOpenedApps] = useState<AppType[]>([]);
   const [isNavbarTabClicked, setIsNavbarTabClicked] = useState<boolean>(false);
 
   const [isTabDragging, setIsTabDragging] = useState<boolean>(false);
 
-  const { width, height } = useWindowDimensions();
-  const isMobile = width <= 768;
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
+
+  const [globalErrorMessage, setGlobalErrorMessage] = useState<string>("");
 
   const emptyBin = () => {
     setRecycled([]);
@@ -108,10 +115,42 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     );
   };
 
+  const appNotFoundError = (appTitle: string) => {
+    setGlobalErrorMessage("C:\\\nApplication not found");
+    setActiveApp("error");
+    setOpenedApps((prev) => {
+      const exists = prev.some((app) => app.title === appTitle);
+      if (exists) return prev;
+
+      let newApp: AppType | null = null;
+
+      newApp = {
+        id: generateId(),
+        zIndex: generateIndex(),
+        title: `error`,
+        icon: "/error/897(16x16).png",
+        resizable: false,
+        minimized: false,
+        maximize: false,
+        showHeader: true,
+        noFooterWindow: true,
+        children: "error",
+        programType: "error",
+        prompt: false,
+        x: width / 2,
+        y: height * 0.4,
+      };
+
+      return newApp ? [...prev, newApp] : prev;
+    });
+  };
+
   const addTab = (appTitle: string | null) => {
     if (!appTitle) return;
-
-    console.log("app title:", appTitle);
+    if (!availableApps.includes(appTitle)) {
+      appNotFoundError(appTitle);
+      return;
+    }
 
     setOpenedApps((prev) => {
       const exists = prev.some((app) => app.title === appTitle);
@@ -181,50 +220,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setActiveApp(appTitle);
   };
 
-  const closeTab = (appTitle: string | null) => {
-    setOpenedApps((prev) => prev.filter((app) => app.title !== appTitle));
+  const closeTab = (appIdOrTitle: string | number | null) => {
+    setOpenedApps((prev) =>
+      prev.filter(
+        (app) => app.id !== appIdOrTitle && app.title !== appIdOrTitle
+      )
+    );
 
-    if (activeApp === appTitle) {
+    if (activeApp === appIdOrTitle) {
       setActiveApp(null);
     }
   };
 
   useEffect(() => {
     if (firstLoad) {
-      setOpenedApps((prev) => {
-        return [
-          ...prev,
-          {
-            id: generateId(),
-            zIndex: generateIndex(),
-            title: "Winamp",
-            icon: "/desktop-icons/Winamp-logo.png",
-            minimized: false,
-            maximize: false,
-            showHeader: false,
-            children: "winamp",
-            programType: "winamp",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
-          {
-            id: generateId(),
-            zIndex: generateIndex(),
-            title: "My Computer",
-            icon: "/desktop-icons/this-pc.ico",
-            minimized: isMobile ? true : false,
-            maximize: isMobile ? true : false,
-            showHeader: true,
-            children: <MyComputer />,
-            programType: "my computer",
-            prompt: false,
-            x: width / 2,
-            y: height * 0.4,
-          },
-        ];
-      });
-
       if (!isMobile) {
         setOpenedApps((prev) => {
           return [
@@ -239,6 +248,70 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
               showHeader: true,
               children: <Recycle />,
               programType: "recycle",
+              prompt: false,
+              x: width / 2,
+              y: height * 0.4,
+            },
+
+            {
+              id: generateId(),
+              zIndex: generateIndex(),
+              title: "Winamp",
+              icon: "/desktop-icons/Winamp-logo.png",
+              minimized: false,
+              maximize: false,
+              showHeader: false,
+              children: "winamp",
+              programType: "winamp",
+              prompt: false,
+              x: width / 2,
+              y: height * 0.4,
+            },
+            {
+              id: generateId(),
+              zIndex: generateIndex(),
+              title: "My Computer",
+              icon: "/desktop-icons/this-pc.ico",
+              minimized: false,
+              maximize: false,
+              showHeader: true,
+              children: <MyComputer />,
+              programType: "my computer",
+              prompt: false,
+              x: width / 1.9,
+              y: height * 0.5,
+            },
+          ];
+        });
+      } else {
+        setOpenedApps((prev) => {
+          return [
+            ...prev,
+
+            {
+              id: generateId(),
+              zIndex: generateIndex(),
+              title: "My Computer",
+              icon: "/desktop-icons/this-pc.ico",
+              minimized: true,
+              maximize: true,
+              showHeader: true,
+              children: <MyComputer />,
+              programType: "my computer",
+              prompt: false,
+              x: width / 2,
+              y: height * 0.4,
+            },
+            {
+              id: generateId(),
+              zIndex: generateIndex(),
+              title: "Winamp",
+              icon: "/desktop-icons/Winamp-logo.png",
+              minimized: false,
+              maximize: false,
+              showHeader: false,
+              children: "winamp",
+              programType: "winamp",
               prompt: false,
               x: width / 2,
               y: height * 0.4,
@@ -268,9 +341,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
-  console.log("opened apps:", openedApps);
-  console.log("active app after double desktop icon click:", activeApp);
-
   return (
     <AppContext.Provider
       value={{
@@ -293,6 +363,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         fromNavbar,
         isNavbarTabClicked,
         addTab,
+        globalErrorMessage,
+        setGlobalErrorMessage,
       }}
     >
       {children}

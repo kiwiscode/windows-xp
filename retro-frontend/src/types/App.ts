@@ -4,12 +4,14 @@ export type App = {
   id: number;
   title: string;
   icon: string;
+  resizable?: boolean;
   minimized: boolean;
   maximize: boolean;
   zIndex: number;
   showHeader: boolean;
+  noFooterWindow?: boolean;
   children: React.ReactNode | string;
-  programType: "recycle" | "my computer" | "winamp";
+  programType: "recycle" | "my computer" | "winamp" | "error";
   prompt: boolean;
   x: number;
   y: number;

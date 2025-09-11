@@ -5,6 +5,7 @@ import OpenedApp from "../components/App";
 import Footer from "../components/Footer";
 import BlueScreen from "../components/BlueScreen";
 import type { DesktopApp } from "../types/DesktopApp";
+import Error from "../components/Error";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
@@ -21,6 +22,7 @@ const Main = () => {
     openedApps,
     setOpenedApps,
     addTab,
+    globalErrorMessage,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
@@ -355,6 +357,7 @@ const Main = () => {
               id={t.id}
               title={t.title}
               icon={t.icon}
+              resizable={t.resizable}
               zIndex={t.zIndex}
               showHeader={t.showHeader}
               programType={t.programType}
