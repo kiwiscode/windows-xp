@@ -9,7 +9,6 @@ import usb from "/navbar-icons/usb.png";
 import risk from "/navbar-icons/risk.png";
 import RiskPopup from "./RiskPopup";
 import bike from "/navbar-icons/Dirt_Bike.webp";
-import folder from "/tab-icons/folder.png";
 import ie from "/navbar-icons/ie.png";
 import mine from "/navbar-icons/mine-icon.png";
 import setAccess from "/navbar-icons/227(32x32).png";
@@ -29,7 +28,6 @@ import help from "/navbar-icons/747(32x32).png";
 import search from "/navbar-icons/299(32x32).png";
 import run from "/navbar-icons/743(32x32).png";
 import lock from "/navbar-icons/546(32x32).png";
-import user from "/navbar-icons/user.png";
 import shut from "/navbar-icons/310(32x32).png";
 import allProgramsIcon from "/navbar-icons/all-programs.ico";
 import winamp from "/navbar-icons/winamp.png";
@@ -38,18 +36,11 @@ import empty from "/navbar-icons/empty.png";
 
 interface OnClickProps {
   onClickMenuItem: (name: string) => void;
+  onClickMenuFooterOption: () => void;
 }
 
 const Footer: React.FC = () => {
-  const {
-    openedApps,
-    activeApp,
-    fromNavbar,
-    setActiveApp,
-    minimizeTab,
-    setOpenedApps,
-    addTab,
-  } = useApp();
+  const { openedApps, activeApp, fromNavbar, minimizeTab, addTab } = useApp();
 
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
 
@@ -58,7 +49,10 @@ const Footer: React.FC = () => {
     addTab(name);
   }
 
-  const soundRef = useRef<HTMLAudioElement>(null);
+  function onClickMenuFooterOption() {
+    setShowStartBar(false);
+  }
+
   const navRef = useRef<HTMLDivElement>(null);
   const startBtnRef = useRef<HTMLImageElement>(null);
 
@@ -119,7 +113,10 @@ const Footer: React.FC = () => {
               boxShadow: "2px 4px 2px rgba(0, 0, 0, 0.5)",
             }}
           >
-            <FooterNav onClickMenuItem={onClickMenuItem} />
+            <FooterNav
+              onClickMenuItem={onClickMenuItem}
+              onClickMenuFooterOption={onClickMenuFooterOption}
+            />
           </div>
         )}
         <img
@@ -199,12 +196,15 @@ const Footer: React.FC = () => {
           {renderTime()}
         </div>
       </div>
-      <audio ref={soundRef} src="/sounds/xp-shut-down.mp3" />
     </footer>
   );
 };
 
-const FooterNav: React.FC<OnClickProps> = ({ onClickMenuItem }) => {
+const FooterNav: React.FC<OnClickProps> = ({
+  onClickMenuItem,
+  onClickMenuFooterOption,
+}) => {
+  const { setShowPowerModal, setModalMode } = useApp();
   const [hovering, setHovering] = useState<string | null>(null);
 
   function onMouseOver(e: React.MouseEvent) {
@@ -252,7 +252,7 @@ const FooterNav: React.FC<OnClickProps> = ({ onClickMenuItem }) => {
           height={42}
           className=" mr-[5px] rounded-[3px]"
           style={{
-            border: "2px solid rgb(222,222,222,.0.8)",
+            border: "2px solid rgb(222,222,222,0.8)",
           }}
           alt=""
         />
@@ -478,7 +478,11 @@ const FooterNav: React.FC<OnClickProps> = ({ onClickMenuItem }) => {
       >
         <div
           className="footer_item p-[3px] flex mr-[10px] items-center cursor-default"
-          // onClick={() => onClick('Log Off')}
+          onClick={() => {
+            setShowPowerModal(true);
+            setModalMode("LOG_OFF");
+            onClickMenuFooterOption();
+          }}
         >
           <img
             className=" w-[22px] h-[22px] mr-[2px] rounded-[3px]"
@@ -489,7 +493,11 @@ const FooterNav: React.FC<OnClickProps> = ({ onClickMenuItem }) => {
         </div>
         <div
           className="footer_item p-[3px] flex mr-[10px] items-center cursor-default"
-          // onClick={() => onClick('Turn Off Computer')}
+          onClick={() => {
+            setShowPowerModal(true);
+            setModalMode("TURN_OFF");
+            onClickMenuFooterOption();
+          }}
         >
           <img
             className=" w-[22px] h-[22px] mr-[2px] rounded-[3px] "

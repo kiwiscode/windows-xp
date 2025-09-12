@@ -10,10 +10,6 @@ body {
   box-sizing: border-box;
 }
 
-body {
-  font-family: "Tahoma-V1", sans-serif;
-}
-
 *,
 *::after,
 *::before {
@@ -31,8 +27,21 @@ body {
 @custom-variant dark (&:is(.dark *));
 
 @font-face {
+  font-family: "ibm";
+  src: url("https://api.allorigins.win/raw?url=https://int10h.org/oldschool-pc-fonts/fontlist/woff/web_ibm_vga_8x16.woff");
+}
+
+@font-face {
+  font-family: "pixel-test";
+  src: url("./assets/fonts/VT323-Regular.woff") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: "Tahoma-V1";
-  src: url("/fonts/Tahoma-V1.woff") format("woff");
+  src: url("./assets/fonts/Tahoma-V1.woff") format("woff");
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -40,10 +49,14 @@ body {
 
 @font-face {
   font-family: "Tahoma-Bold-V1";
-  src: url("/fonts/Tahoma-Bold-V1.woff") format("woff");
+  src: url("./assets/fonts/Tahoma-Bold-V1.woff") format("woff");
   font-weight: bold;
   font-style: normal;
   font-display: swap;
+}
+
+body {
+  font-family: "Tahoma-V1", sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -316,4 +329,26 @@ body {
 
 .footer_item:hover {
   background-color: rgba(60, 80, 210, 0.5);
+}
+
+.pixel-test {
+  font-family: "pixel-test" !important;
+}
+
+.text-shadow-openXPsc {
+  text-shadow: 2.6px 0 1px rgba(0, 30, 255, 0.5),
+    -2.6px 0 1px rgba(255, 0, 80, 0.3), 0 0 3px;
+}
+
+@keyframes move {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(180px);
+  }
+}
+
+.animate-move {
+  animation: move 1.5s linear infinite;
 }

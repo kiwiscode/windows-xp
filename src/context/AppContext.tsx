@@ -12,6 +12,11 @@ import MyComputer from "../tabContent/MyComputer";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import { desktopApps } from "../data/desktopApps";
 import { availableApps } from "../constants/availableApps";
+import type { ModalMode, ModalAction } from "../types/Modal";
+
+interface AppProviderProps {
+  children: ReactNode;
+}
 
 interface AppContextType {
   recycled: DesktopApp[];
@@ -35,10 +40,20 @@ interface AppContextType {
   addTab: (param: string) => void;
   globalErrorMessage: string;
   setGlobalErrorMessage: React.Dispatch<React.SetStateAction<string>>;
-}
-
-interface AppProviderProps {
-  children: ReactNode;
+  showPowerModal: boolean;
+  setShowPowerModal: React.Dispatch<React.SetStateAction<boolean>>;
+  modalMode: ModalMode;
+  setModalMode: React.Dispatch<React.SetStateAction<ModalMode>>;
+  modalAction: ModalAction;
+  setModalAction: React.Dispatch<React.SetStateAction<ModalAction>>;
+  showOpenScreen: boolean;
+  setShowOpenScreen: React.Dispatch<React.SetStateAction<boolean>>;
+  showStartScreen: boolean;
+  setShowStartScreen: React.Dispatch<React.SetStateAction<boolean>>;
+  showStandByScreen: boolean;
+  setShowStandByScreen: React.Dispatch<React.SetStateAction<boolean>>;
+  showSwitchUserScreen: boolean;
+  setShowSwitchUserScreen: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const generate = () => {
@@ -50,7 +65,7 @@ const generate = () => {
 };
 
 const generateId = generate();
-const generateIndex = generate();
+export const generateIndex = generate();
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
@@ -70,6 +85,16 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const [globalErrorMessage, setGlobalErrorMessage] = useState<string>("");
+
+  const [showPowerModal, setShowPowerModal] = useState<boolean>(false);
+  const [modalMode, setModalMode] = useState<ModalMode>(null);
+  const [modalAction, setModalAction] = useState<ModalAction>(null);
+
+  const [showOpenScreen, setShowOpenScreen] = useState<boolean>(false);
+  const [showStartScreen, setShowStartScreen] = useState<boolean>(false);
+  const [showStandByScreen, setShowStandByScreen] = useState<boolean>(false);
+  const [showSwitchUserScreen, setShowSwitchUserScreen] =
+    useState<boolean>(false);
 
   const emptyBin = () => {
     setRecycled([]);
@@ -341,6 +366,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
+  console.log("modal action:", modalAction);
+  console.log("show open screen:", showOpenScreen);
+  console.log("show start screen:", showStartScreen);
+  console.log("show stand by screen:", showStandByScreen);
+  console.log("show switch user screen:", showSwitchUserScreen);
+
   return (
     <AppContext.Provider
       value={{
@@ -365,6 +396,20 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         addTab,
         globalErrorMessage,
         setGlobalErrorMessage,
+        showPowerModal,
+        setShowPowerModal,
+        modalMode,
+        setModalMode,
+        modalAction,
+        setModalAction,
+        showOpenScreen,
+        setShowOpenScreen,
+        showStartScreen,
+        setShowStartScreen,
+        showStandByScreen,
+        setShowStandByScreen,
+        showSwitchUserScreen,
+        setShowSwitchUserScreen,
       }}
     >
       {children}
