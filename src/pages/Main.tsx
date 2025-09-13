@@ -35,14 +35,11 @@ const Main = () => {
     showSwitchUserScreen,
     isDragging,
     setIsDragging,
-    setFocusedAppId,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
 
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
-  const [menuX, setMenuX] = useState<number>(0);
-  const [menuY, setMenuY] = useState<number>(0);
 
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
 
@@ -99,18 +96,6 @@ const Main = () => {
 
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp);
-  };
-
-  // Sağ tık menüsü
-  const handleContextMenu = (e: React.MouseEvent, appTitle: string | null) => {
-    e.preventDefault();
-    setMenuVisible(true);
-    setMenuX(e.clientX);
-    setMenuY(e.clientY);
-
-    if (appTitle) {
-      setSelectedAppTitle(appTitle);
-    }
   };
 
   const handleSortByName = () => {
@@ -171,6 +156,31 @@ const Main = () => {
     setTabMeasurements(measurements);
   }, [openedApps]);
 
+  useEffect(() => {
+    setApps(
+      desktopApps
+        .filter((app) => {
+          if (app.title === "Recycle Bin") {
+            return recycled.length > 0
+              ? app.icon.includes("full")
+              : app.icon.includes("recycle-bin.ico");
+          }
+          return true;
+        })
+        .map((app) => {
+          if (app.title === "Recycle Bin") {
+            return {
+              ...app,
+              show: true,
+            };
+          }
+          return app;
+        })
+    );
+  }, [recycled]);
+
+  console.log("apps:", apps);
+
   return (
     <>
       {showSwitchUserScreen ? (
@@ -207,16 +217,6 @@ const Main = () => {
               onClick={() => setClickedAppId(null)}
             >
               {apps.map((app) => {
-                if (app.title === "Recycle Bin") {
-                  if (recycled.length > 0) {
-                    app.icon = "/desktop-icons/recycle-bin-full.ico";
-                    app.show = true;
-                  } else {
-                    app.icon = "/desktop-icons/recycle-bin.ico";
-                    app.show = true;
-                  }
-                }
-
                 if ("show" in app && !app.show) return null;
                 return (
                   <div
@@ -224,7 +224,6 @@ const Main = () => {
                       setClickedAppId(null);
                       addTab(app.title);
                     }}
-                    onContextMenu={(e) => handleContextMenu(e, app.title)}
                     key={app.id}
                     className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}
                     style={{
@@ -264,8 +263,6 @@ const Main = () => {
                 <div
                   className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
                   style={{
-                    top: menuY,
-                    left: menuX,
                     fontFamily: 'Arial, "Open Sans", sans-serif',
                   }}
                 >
@@ -328,8 +325,6 @@ const Main = () => {
                 <div
                   className="absolute bg-[#f9f9f9] rounded-md min-w-[280px] text-black shadow-lg z-50"
                   style={{
-                    top: menuY,
-                    left: menuX,
                     fontFamily: 'Arial, "Open Sans", sans-serif',
                   }}
                 >
