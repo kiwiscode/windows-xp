@@ -3,6 +3,7 @@ import l from "/open-screen/l.gif";
 import { useEffect, useState } from "react";
 import { useApp } from "../context/AppContext";
 import startSound from "/sounds/xp-startup.mp3";
+import useWindowDimensions from "../hooks/useWindowDimensions";
 
 const options = [
   "Safe Mode",
@@ -15,6 +16,7 @@ const OpenXpScreen = () => {
   const [dots, setDots] = useState<string>(".");
   const [finished, setFinished] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     setModalAction(null);
@@ -80,9 +82,9 @@ const OpenXpScreen = () => {
         fontFamily: "ibm",
       }}
     >
-      <div className="flex flex-col items-start md:flex-row gap-4 py-10">
-        <div className="md:flex-1 md:basis-10/12 text-[40px] max-md:text-[24px] flex flex-col gap-12">
-          <div className="flex items-end gap-2">
+      <div className="flex flex-col items-start md:flex-row gap-4 md:py-10">
+        <div className="md:flex-1 md:basis-10/12 text-[40px] max-md:text-[24px] flex flex-col md:gap-12 max-md:gap-4">
+          <div className="flex items-end max-md:items-center gap-2">
             <div>
               <img
                 src={l}
@@ -113,9 +115,12 @@ const OpenXpScreen = () => {
             IDE Channel 1 Master : WDC WD3200AAJS-00RY10 12.01B01
             <br />
             <br />
-            Detecting IDE drives {dots}
-            <br />
-            {finished && (
+            {!finished ? (
+              <>
+                Detecting IDE drives {dots}
+                <br />
+              </>
+            ) : (
               <>
                 Primary Master: ST3160815AS 160GB <br />
                 <br />
@@ -150,6 +155,7 @@ const OpenXpScreen = () => {
             }}
           />
         </div>
+        {width <= 768 && <br />}
       </div>
       <div className="mt-auto crt">
         <span className="text-[40px] max-md:text-[24px]">
