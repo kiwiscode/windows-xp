@@ -17,12 +17,12 @@ const OpenedApp = (props: AppType) => {
     setActiveApp,
     openedApps,
     setOpenedApps,
-    isTabDragging,
-    setIsTabDragging,
     isNavbarTabClicked,
     globalErrorMessage,
     focusedAppId,
     setFocusedAppId,
+    isDragging,
+    setIsDragging,
   } = useApp();
   const { width } = useWindowDimensions();
   const isMobile = width <= 768;
@@ -32,7 +32,7 @@ const OpenedApp = (props: AppType) => {
 
   const handleMouseDown = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
-    setIsTabDragging(true);
+    setIsDragging(id);
 
     const isTabExist = openedApps.find((t) => t.id === id);
     if (!isTabExist) return;
@@ -70,7 +70,7 @@ const OpenedApp = (props: AppType) => {
     };
 
     const handleMouseUp = () => {
-      setIsTabDragging(false);
+      setIsDragging(null);
 
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
@@ -160,7 +160,7 @@ const OpenedApp = (props: AppType) => {
             : "translate(-50%, -50%)",
 
         zIndex: props.zIndex,
-        // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
+        // transition: !isDragging || isMinimizing ? "all 0.3s" : "none",
         position: "absolute",
         padding: !props.showHeader ? 0 : "3px",
         // backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
@@ -296,7 +296,7 @@ const OpenedApp = (props: AppType) => {
             errorMessage={globalErrorMessage || "C:\\\nError UNKNOWN"}
           />
         ) : props.title === "Paint" ? (
-          <Paint isFocus={false} />
+          <Paint isFocus={focusedAppId === props.id && !isDragging} />
         ) : props.title === "Winamp" ? (
           <Winamp reopen={showWinamp} close={showWinamp} cb={winampCallback} />
         ) : (

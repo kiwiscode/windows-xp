@@ -15,7 +15,7 @@ import SwitchUserScreen from "../components/SwitchUserScreen";
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
 
-  const [bgIndex, setBgIndex] = useState(0);
+  const [bgIndex, setBgIndex] = useState<number>(0);
   const {
     recycled,
     setRecycled,
@@ -33,15 +33,16 @@ const Main = () => {
     showStartScreen,
     showStandByScreen,
     showSwitchUserScreen,
+    isDragging,
+    setIsDragging,
+    setFocusedAppId,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
 
-  const [isDragging, setIsDragging] = useState(false);
-
-  const [menuVisible, setMenuVisible] = useState(false);
-  const [menuX, setMenuX] = useState(0);
-  const [menuY, setMenuY] = useState(0);
+  const [menuVisible, setMenuVisible] = useState<boolean>(false);
+  const [menuX, setMenuX] = useState<number>(0);
+  const [menuY, setMenuY] = useState<number>(0);
 
   const [hoveredMenu, setHoveredMenu] = useState<string | null>(null);
 
@@ -70,10 +71,11 @@ const Main = () => {
 
   const handleMouseDown = (e: React.MouseEvent, id: number) => {
     e.preventDefault();
-    setIsDragging(true);
 
     const app = apps.find((a) => a.id === id);
     if (!app) return;
+
+    setIsDragging(app?.id);
 
     const handleMouseMove = (moveEvent: MouseEvent) => {
       setApps((prev) =>
@@ -90,7 +92,7 @@ const Main = () => {
     };
 
     const handleMouseUp = () => {
-      setIsDragging(false);
+      setIsDragging(null);
       document.removeEventListener("mousemove", handleMouseMove);
       document.removeEventListener("mouseup", handleMouseUp);
     };
@@ -112,7 +114,7 @@ const Main = () => {
   };
 
   const handleSortByName = () => {
-    setIsDragging(false);
+    setIsDragging(null);
     setApps(desktopApps);
     setMenuVisible(false);
   };

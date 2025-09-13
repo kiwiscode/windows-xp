@@ -33,8 +33,6 @@ interface AppContextType {
   minimizeTab: (tabId: number | null) => void;
   closeTab: (tabId: number | null) => void;
   maximizeTab: (tabId: number | null) => void;
-  isTabDragging: boolean;
-  setIsTabDragging: React.Dispatch<React.SetStateAction<boolean>>;
   fromNavbar: (param: boolean) => void;
   isNavbarTabClicked: boolean;
   addTab: (param: string) => void;
@@ -56,6 +54,8 @@ interface AppContextType {
   setShowSwitchUserScreen: React.Dispatch<React.SetStateAction<boolean>>;
   focusedAppId: number | null;
   setFocusedAppId: React.Dispatch<React.SetStateAction<number | null>>;
+  isDragging: number | null;
+  setIsDragging: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const generate = () => {
@@ -82,8 +82,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [openedApps, setOpenedApps] = useState<AppType[]>([]);
   const [isNavbarTabClicked, setIsNavbarTabClicked] = useState<boolean>(false);
 
-  const [isTabDragging, setIsTabDragging] = useState<boolean>(false);
-
   const [firstLoad, setFirstLoad] = useState<boolean>(true);
 
   const [globalErrorMessage, setGlobalErrorMessage] = useState<string>("");
@@ -100,6 +98,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [focusedAppId, setFocusedAppId] = useState<number | null>(
     isMobile ? 7 : 2
   );
+  const [isDragging, setIsDragging] = useState<number | null>(null);
 
   const emptyBin = () => {
     setRecycled([]);
@@ -203,11 +202,12 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
       const isMobile = width <= 768;
       let newApp: AppType | null = null;
+      const newId = generateId();
 
       switch (appTitle) {
         case "Winamp":
           newApp = {
-            id: generateId(),
+            id: newId,
             zIndex: generateIndex(),
             title: "Winamp",
             icon: "/desktop-icons/Winamp-logo.png",
@@ -224,7 +224,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
         case "My Computer":
           newApp = {
-            id: generateId(),
+            id: newId,
             zIndex: generateIndex(),
             title: "My Computer",
             icon: "/desktop-icons/this-pc.ico",
@@ -241,7 +241,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
 
         case "Recycle Bin":
           newApp = {
-            id: generateId(),
+            id: newId,
             zIndex: generateIndex(),
             title: "Recycle Bin",
             icon: "/desktop-icons/recycle-bin.ico",
@@ -257,7 +257,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
           break;
         case "Paint":
           newApp = {
-            id: generateId(),
+            id: newId,
             zIndex: generateIndex(),
             title: "Paint",
             icon: "/desktop-icons/paint-large.png",
@@ -276,7 +276,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         default:
           return prev;
       }
-
+      if (newApp) setFocusedAppId(newId);
       return newApp ? [...prev, newApp] : prev;
     });
     setActiveApp(appTitle);
@@ -374,18 +374,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setFirstLoad(false);
   }, []);
 
-  // useEffect(() => {
-  //   if (!activeApp) return;
-
-  //   setOpenedApps((prev) =>
-  //     prev.map((tab) => {
-  //       if (tab.title === activeApp) {
-  //         return { ...tab, zIndex: generateIndex(), minimized: false };
-  //       }
-  //       return tab;
-  //     })
-  //   );
-  // }, [activeApp]);
   useEffect(() => {
     if (focusedAppId == null || focusedAppId == undefined) return;
 
@@ -429,8 +417,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         closeTab,
         minimizeTab,
         maximizeTab,
-        isTabDragging,
-        setIsTabDragging,
         fromNavbar,
         isNavbarTabClicked,
         addTab,
@@ -452,6 +438,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setShowSwitchUserScreen,
         focusedAppId,
         setFocusedAppId,
+        isDragging,
+        setIsDragging,
       }}
     >
       {children}
