@@ -221,14 +221,7 @@ const Main = () => {
                   <div
                     onDoubleClick={() => {
                       setClickedAppId(null);
-                      const exists = openedApps.some(
-                        (a) => a.title === app.title && !a.multiInstance
-                      );
-                      if (!exists) {
-                        addTab(app.title);
-                      } else {
-                        setActiveApp(app.title);
-                      }
+                      addTab(app.title);
                     }}
                     onContextMenu={(e) => handleContextMenu(e, app.title)}
                     key={app.id}
