@@ -22,7 +22,6 @@ const Main = () => {
     emptyBin,
     apps,
     setApps,
-    setActiveApp,
     openedApps,
     addTab,
     showPowerModal,

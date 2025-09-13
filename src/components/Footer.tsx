@@ -47,6 +47,7 @@ const Footer: React.FC = () => {
     minimizeTab,
     addTab,
     setFocusedAppId,
+    focusedAppId,
   } = useApp();
 
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
@@ -151,7 +152,7 @@ const Footer: React.FC = () => {
               }}
               style={{
                 boxShadow:
-                  t.title === activeApp
+                  t.id === focusedAppId
                     ? `rgb(0 0 0 / 20%) 0px 0px 1px 1px inset, rgb(0 0 0 / 70%) 1px 0px 1px inset`
                     : `rgb(0 0 0 / 30%) -1px 0px inset, rgb(255 255 255 / 20%) 1px 1px 1px inset`,
               }}
@@ -159,7 +160,7 @@ const Footer: React.FC = () => {
     cursor-default flex-1 max-w-[150px] text-white rounded-[2px] mt-[2px] px-[8px] h-[22px] text-[11px]
     relative flex items-center 
     ${
-      t.title === activeApp
+      t.id === focusedAppId
         ? "bg-[rgb(30,82,183)] hover:bg-[#184293] shadow-[rgb(0_0_0/20%)_0px_0px_1px_1px_inset,_rgb(0_0_0/70%)_1px_0px_1px_inset] hover:shadow-[rgb(0_0_0/30%)_-1px_0px_inset,_rgb(255_255_255/20%)_1px_1px_1px_inset]"
         : "bg-[rgb(60,129,243)] hover:bg-[#2f6dd1] shadow-[rgb(0_0_0/30%)_-1px_0px_inset,_rgb(255_255_255/20%)_1px_1px_1px_inset] hover:shadow-[rgb(0_0_0/20%)_0px_0px_1px_1px_inset,_rgb(0_0_0/70%)_1px_0px_1px_inset]"
     }

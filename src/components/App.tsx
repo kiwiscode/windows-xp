@@ -101,6 +101,8 @@ const OpenedApp = (props: AppType) => {
     };
   }, [activeApp]);
 
+  console.log("props:", props);
+
   return (
     <div
       ref={tabRef}

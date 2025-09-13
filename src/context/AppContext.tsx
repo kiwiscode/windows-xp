@@ -186,7 +186,14 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
       const exists = prev.some(
         (app) => app.title === appTitle && !app.multiInstance
       );
-      if (exists) return prev;
+      // if (exists) return prev;
+      if (exists) {
+        const existingApp = prev.find(
+          (app) => app.title === appTitle && !app.multiInstance
+        );
+        if (existingApp) setFocusedAppId(existingApp.id);
+        return prev;
+      }
 
       const isMobile = width <= 768;
       let newApp: AppType | null = null;
