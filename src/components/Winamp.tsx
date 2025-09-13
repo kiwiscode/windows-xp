@@ -16,7 +16,7 @@ interface WinampProps {
 function Winamp({ reopen, close, cb }: WinampProps) {
   const ref = useRef<HTMLDivElement | null>(null);
   const webamp = useRef<Webamp | null>(null);
-  const { closeTab, minimizeTab, setActiveApp } = useApp();
+  const { closeTab, minimizeTab, openedApps, setFocusedAppId } = useApp();
   useEffect(() => {
     const target = ref.current;
     if (!target) {
@@ -60,15 +60,20 @@ function Winamp({ reopen, close, cb }: WinampProps) {
       if (!closeBtn) return;
       if (!minimizeBtn) return;
 
+      const winampApp = openedApps.find((app) => app.title === "Winamp");
       // close Winamp from its own header
       const handleClickClose = () => {
-        closeTab("Winamp");
-        setActiveApp(null);
+        if (winampApp) {
+          closeTab(winampApp.id);
+          setFocusedAppId(null);
+        }
       };
       // minimize Winamp from its own header
       const handleClickMinimize = () => {
-        minimizeTab("Winamp");
-        setActiveApp(null);
+        if (winampApp) {
+          minimizeTab(winampApp.id);
+          setFocusedAppId(null);
+        }
       };
 
       closeBtn.addEventListener("click", handleClickClose);

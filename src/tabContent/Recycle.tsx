@@ -12,7 +12,7 @@ import control from "/tab-icons/control.png";
 type closedTab = "A" | "B" | "C";
 
 const Recycle = () => {
-  const { recycled, restoreApp, deletePermanent } = useApp();
+  const { recycled, restoreApp, deletePermanentApp } = useApp();
   const [showUndoRecycleWindow, setShowUndoRecycleWindow] =
     useState<boolean>(false);
   const [closedTabs, setCloseTabs] = useState<closedTab[]>([]);

@@ -223,7 +223,7 @@ const OpenedApp = (props: AppType) => {
         onDoubleClick={(e) => {
           e.stopPropagation();
           if (props.resizable === false) return;
-          maximizeTab(props.title);
+          maximizeTab(props.id);
         }}
         className={`app__header ${
           !props.showHeader ? "hidden" : "flex"
@@ -255,7 +255,7 @@ const OpenedApp = (props: AppType) => {
                 <div
                   onClick={() => {
                     setIsMinimizing(true);
-                    minimizeTab(props.title);
+                    minimizeTab(props.id);
                   }}
                   style={{
                     filter: activeApp == props.title ? "" : unfocusedAdjustment,
@@ -265,7 +265,7 @@ const OpenedApp = (props: AppType) => {
               )}
               {!props.prompt && !isMobile && (
                 <div
-                  onClick={() => maximizeTab(props.title)}
+                  onClick={() => maximizeTab(props.id)}
                   style={{
                     filter: activeApp == props.title ? "" : unfocusedAdjustment,
                   }}

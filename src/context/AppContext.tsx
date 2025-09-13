@@ -28,11 +28,11 @@ interface AppContextType {
   openedApps: AppType[];
   setOpenedApps: React.Dispatch<React.SetStateAction<AppType[]>>;
   emptyBin: () => void;
-  deletePermanent: (appTitle: string | null) => void;
+  deletePermanentApp: (appTitle: string | null) => void;
   restoreApp: (appTitle: string | null) => void;
-  minimizeTab: (appTitle: string | null) => void;
-  maximizeTab: (appTitle: string | null) => void;
-  closeTab: (appTitle: string | number | null) => void;
+  minimizeTab: (tabId: number | null) => void;
+  closeTab: (tabId: number | null) => void;
+  maximizeTab: (tabId: number | null) => void;
   isTabDragging: boolean;
   setIsTabDragging: React.Dispatch<React.SetStateAction<boolean>>;
   fromNavbar: (param: boolean) => void;
@@ -105,7 +105,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setRecycled([]);
   };
 
-  const deletePermanent = (appTitle: string | null): void => {
+  const deletePermanentApp = (appTitle: string | null): void => {
     setApps((prev) => prev.filter((app) => app.title !== appTitle));
     setRecycled((prev) => prev.filter((app) => app.title !== appTitle));
   };
@@ -118,21 +118,27 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
   };
 
-  const minimizeTab = (appTitle: string | null) => {
+  const minimizeTab = (tabId: number | null) => {
     setOpenedApps((prev) =>
-      prev.map((app) =>
-        app.title === appTitle ? { ...app, minimized: true } : app
-      )
+      prev.map((app) => (app.id === tabId ? { ...app, minimized: true } : app))
     );
-    if (activeApp === appTitle) {
-      setActiveApp(null);
+    if (focusedAppId === tabId) {
+      setFocusedAppId(null);
     }
   };
 
-  const maximizeTab = (appTitle: string | null) => {
+  const closeTab = (tabId: number | null) => {
+    setOpenedApps((prev) => prev.filter((app) => app.id !== tabId));
+
+    if (focusedAppId === tabId) {
+      setFocusedAppId(null);
+    }
+  };
+
+  const maximizeTab = (tabId: number | null) => {
     setOpenedApps((prev) =>
       prev.map((app) =>
-        app.title === appTitle
+        app.id === tabId
           ? {
               ...app,
               maximize: !app.maximize,
@@ -276,18 +282,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setActiveApp(appTitle);
   };
 
-  const closeTab = (appIdOrTitle: string | number | null) => {
-    setOpenedApps((prev) =>
-      prev.filter(
-        (app) => app.id !== appIdOrTitle && app.title !== appIdOrTitle
-      )
-    );
-
-    if (activeApp === appIdOrTitle) {
-      setActiveApp(null);
-    }
-  };
-
   useEffect(() => {
     if (firstLoad) {
       if (!isMobile) {
@@ -380,18 +374,30 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setFirstLoad(false);
   }, []);
 
+  // useEffect(() => {
+  //   if (!activeApp) return;
+
+  //   setOpenedApps((prev) =>
+  //     prev.map((tab) => {
+  //       if (tab.title === activeApp) {
+  //         return { ...tab, zIndex: generateIndex(), minimized: false };
+  //       }
+  //       return tab;
+  //     })
+  //   );
+  // }, [activeApp]);
   useEffect(() => {
-    if (!activeApp) return;
+    if (focusedAppId == null || focusedAppId == undefined) return;
 
     setOpenedApps((prev) =>
       prev.map((tab) => {
-        if (tab.title === activeApp) {
+        if (tab.id === focusedAppId) {
           return { ...tab, zIndex: generateIndex(), minimized: false };
         }
         return tab;
       })
     );
-  }, [activeApp]);
+  }, [focusedAppId]);
 
   const fromNavbar = (data: boolean) => {
     setIsNavbarTabClicked(data);
@@ -418,7 +424,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         openedApps,
         setOpenedApps,
         emptyBin,
-        deletePermanent,
+        deletePermanentApp,
         restoreApp,
         closeTab,
         minimizeTab,

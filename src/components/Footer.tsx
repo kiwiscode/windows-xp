@@ -42,12 +42,12 @@ interface OnClickProps {
 const Footer: React.FC = () => {
   const {
     openedApps,
-    activeApp,
     fromNavbar,
     minimizeTab,
     addTab,
     setFocusedAppId,
     focusedAppId,
+    setOpenedApps,
   } = useApp();
 
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
@@ -144,10 +144,16 @@ const Footer: React.FC = () => {
                 e.stopPropagation();
                 fromNavbar(true);
                 setFocusedAppId(t.id);
-                if (activeApp === t.title) {
-                  minimizeTab(t.title);
+
+                if (focusedAppId === t.id) {
+                  minimizeTab(t.id);
                 } else {
-                  addTab(t.title);
+                  setOpenedApps((prev) =>
+                    prev.map((app) =>
+                      app.id === t.id ? { ...app, minimized: false } : app
+                    )
+                  );
+                  setFocusedAppId(t.id);
                 }
               }}
               style={{
