@@ -40,7 +40,14 @@ interface OnClickProps {
 }
 
 const Footer: React.FC = () => {
-  const { openedApps, activeApp, fromNavbar, minimizeTab, addTab } = useApp();
+  const {
+    openedApps,
+    activeApp,
+    fromNavbar,
+    minimizeTab,
+    addTab,
+    setFocusedAppId,
+  } = useApp();
 
   const [showStartBar, setShowStartBar] = useState<boolean>(false);
 
@@ -135,6 +142,7 @@ const Footer: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 fromNavbar(true);
+                setFocusedAppId(t.id);
                 if (activeApp === t.title) {
                   minimizeTab(t.title);
                 } else {

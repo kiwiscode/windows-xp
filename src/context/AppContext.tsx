@@ -54,6 +54,8 @@ interface AppContextType {
   setShowStandByScreen: React.Dispatch<React.SetStateAction<boolean>>;
   showSwitchUserScreen: boolean;
   setShowSwitchUserScreen: React.Dispatch<React.SetStateAction<boolean>>;
+  focusedAppId: number | null;
+  setFocusedAppId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
 const generate = () => {
@@ -95,6 +97,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [showStandByScreen, setShowStandByScreen] = useState<boolean>(false);
   const [showSwitchUserScreen, setShowSwitchUserScreen] =
     useState<boolean>(false);
+  const [focusedAppId, setFocusedAppId] = useState<number | null>(
+    isMobile ? 7 : 2
+  );
 
   const emptyBin = () => {
     setRecycled([]);
@@ -391,6 +396,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   console.log("show stand by screen:", showStandByScreen);
   console.log("show switch user screen:", showSwitchUserScreen);
 
+  console.log("active app:", activeApp);
+  console.log("focused app id:", focusedAppId);
+
   return (
     <AppContext.Provider
       value={{
@@ -429,6 +437,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setShowStandByScreen,
         showSwitchUserScreen,
         setShowSwitchUserScreen,
+        focusedAppId,
+        setFocusedAppId,
       }}
     >
       {children}

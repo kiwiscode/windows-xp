@@ -21,6 +21,8 @@ const OpenedApp = (props: AppType) => {
     setIsTabDragging,
     isNavbarTabClicked,
     globalErrorMessage,
+    focusedAppId,
+    setFocusedAppId,
   } = useApp();
   const { width } = useWindowDimensions();
   const isMobile = width <= 768;
@@ -105,6 +107,7 @@ const OpenedApp = (props: AppType) => {
       onMouseDown={(e) => {
         e.stopPropagation();
         setActiveApp(props.title);
+        setFocusedAppId(props.id);
       }}
       style={{
         left:
@@ -158,7 +161,8 @@ const OpenedApp = (props: AppType) => {
         // transition: !isTabDragging || isMinimizing ? "all 0.3s" : "none",
         position: "absolute",
         padding: !props.showHeader ? 0 : "3px",
-        backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
+        // backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
+        backgroundColor: focusedAppId === props.id ? "#0831d9" : "#6582f5",
         display: !props.minimized ? "flex" : "none",
         flexDirection: "column",
         borderTopLeftRadius: props.maximize || isMobile ? "0px" : "8px",
@@ -178,7 +182,7 @@ const OpenedApp = (props: AppType) => {
     before:bg-gradient-to-r
     before:from-[#1638e6]
     before:to-transparent
-    ${activeApp === props.title ? "before:opacity-100" : "before:opacity-30"}
+    ${focusedAppId === props.id ? "before:opacity-100" : "before:opacity-30"}
     after:content-['']
     after:absolute
     after:inset-y-0
@@ -187,11 +191,14 @@ const OpenedApp = (props: AppType) => {
     after:bg-gradient-to-l
     after:from-[#1638e6]
     after:to-transparent
-    ${activeApp === props.title ? "after:opacity-100" : "after:opacity-40"}
+    ${focusedAppId === props.id ? "after:opacity-100" : "after:opacity-40"}
   `}
         style={{
           background:
-            activeApp === props.title
+            // activeApp === props.title
+            //   ? "linear-gradient(to bottom,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)"
+            //   : "linear-gradient(to bottom, #7697e7 0%,#7e9ee3 3%,#94afe8 6%,#97b4e9 8%,#82a5e4 14%,#7c9fe2 17%,#7996de 25%,#7b99e1 56%,#82a9e9 81%,#80a5e7 89%,#7b96e1 94%,#7a93df 97%,#abbae3 100%)",
+            focusedAppId === props.id
               ? "linear-gradient(to bottom,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)"
               : "linear-gradient(to bottom, #7697e7 0%,#7e9ee3 3%,#94afe8 6%,#97b4e9 8%,#82a5e4 14%,#7c9fe2 17%,#7996de 25%,#7b99e1 56%,#82a9e9 81%,#80a5e7 89%,#7b96e1 94%,#7a93df 97%,#abbae3 100%)",
           position: "absolute",
