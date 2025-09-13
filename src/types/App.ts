@@ -7,11 +7,12 @@ export type App = {
   resizable?: boolean;
   minimized: boolean;
   maximize: boolean;
+  multiInstance?: boolean;
   zIndex: number;
   showHeader: boolean;
   noFooterWindow?: boolean;
   children: React.ReactNode | string;
-  programType: "recycle" | "my computer" | "winamp" | "error";
+  programType: "recycle" | "my computer" | "winamp" | "paint" | "error";
   prompt: boolean;
   x: number;
   y: number;

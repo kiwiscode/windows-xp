@@ -52,4 +52,11 @@ export const desktopApps: DesktopApp[] = [
     x: 0,
     y: 475,
   },
+  {
+    id: 8,
+    title: "Paint",
+    icon: "/desktop-icons/paint-large.png",
+    x: 0,
+    y: 550,
+  },
 ];

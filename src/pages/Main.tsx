@@ -222,7 +222,7 @@ const Main = () => {
                     onDoubleClick={() => {
                       setClickedAppId(null);
                       const exists = openedApps.some(
-                        (a) => a.title === app.title
+                        (a) => a.title === app.title && !a.multiInstance
                       );
                       if (!exists) {
                         addTab(app.title);

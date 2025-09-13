@@ -178,7 +178,9 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     }
 
     setOpenedApps((prev) => {
-      const exists = prev.some((app) => app.title === appTitle);
+      const exists = prev.some(
+        (app) => app.title === appTitle && !app.multiInstance
+      );
       if (exists) return prev;
 
       const isMobile = width <= 768;
@@ -230,6 +232,23 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
             showHeader: true,
             children: <Recycle />,
             programType: "recycle",
+            prompt: false,
+            x: width / 2,
+            y: height * 0.4,
+          };
+          break;
+        case "Paint":
+          newApp = {
+            id: generateId(),
+            zIndex: generateIndex(),
+            title: "Paint",
+            icon: "/desktop-icons/paint-large.png",
+            minimized: false,
+            maximize: isMobile ? true : false,
+            multiInstance: true,
+            showHeader: true,
+            children: "paint",
+            programType: "paint",
             prompt: false,
             x: width / 2,
             y: height * 0.4,

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import Winamp from "./Winamp";
 import Error from "./Error";
 import useWindowDimensions from "../hooks/useWindowDimensions";
+import Paint from "./Paint";
 
 const unfocusedAdjustment = "brightness(1.05)";
 const OpenedApp = (props: AppType) => {
@@ -285,6 +286,8 @@ const OpenedApp = (props: AppType) => {
             _onClose={() => closeTab(props.id)}
             errorMessage={globalErrorMessage || "C:\\\nError UNKNOWN"}
           />
+        ) : props.title === "Paint" ? (
+          <Paint isFocus={false} />
         ) : props.title === "Winamp" ? (
           <Winamp reopen={showWinamp} close={showWinamp} cb={winampCallback} />
         ) : (
