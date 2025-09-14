@@ -1,69 +1,33 @@
-# React + TypeScript + Vite
+# Windows Xp - Retro
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is designed for those who **miss and want to relive the Windows XP experience**.
 
-Currently, two official plugins are available:
+## Purpose
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+To bring the **Windows XP operating system** experience—popular in 2002 and widely used until 2010—directly to your browser.
 
-## Expanding the ESLint configuration
+## Features
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- **Winamp + Milkdrop**: Nostalgic music visualizations.
+- **Paint**: A mini app to create your own drawings.
+- **Computer & Recycle Bin**: Explore files like in the classic XP environment.
+- **Retro Game Experience (via short videos)**:
+  - Max Payne
+  - GTA Vice City
+  - Counter-Strike 1.6
+- **Footer / Start Menu**:
+  - Stand by
+  - Turn off
+  - Restart
+  - Switch user
+  - Log off
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Contributing
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+The project is **open to contributions**.  
+Feel free to add or improve any features!
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Resources / Credits
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **[Webamp](https://github.com/captbaritone/webamp)** – Browser version of Winamp 2 created by [captbaritone](https://github.com/captbaritone)
+- **[JS Paint](https://github.com/1j01/jspaint)** – Browser version of Paint created by [1j01](https://github.com/1j01)
