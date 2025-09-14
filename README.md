@@ -2,6 +2,8 @@
 
 This project is designed for those who **miss and want to relive the Windows XP experience**.
 
+https://github.com/user-attachments/assets/a63961b5-f3fd-447d-b602-54e14bc1a35d
+
 ## Purpose
 
 To bring the **Windows XP operating system** experience—popular in 2002 and widely used until 2010—directly to your browser.
