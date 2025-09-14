@@ -20,7 +20,6 @@ const OpenXpScreen = () => {
 
   useEffect(() => {
     setModalAction(null);
-    // setFinished(false);
     const interval = setInterval(() => {
       setDots((prev) => (prev.length < 3 ? prev + "." : "."));
     }, 300);
@@ -144,7 +143,7 @@ const OpenXpScreen = () => {
           </div>
         </div>
 
-        {/* Sağ taraf: Image */}
+        {/* Right side: Image */}
         <div className="md:basis-2/12 flex justify-end md:justify-end max-md:mt-10 max-md:w-[65%] max-md:mx-auto">
           <img
             src={r}

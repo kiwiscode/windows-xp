@@ -12,9 +12,7 @@ import control from "/tab-icons/control.png";
 type closedTab = "A" | "B" | "C";
 
 const Recycle = () => {
-  const { recycled, restoreApp, deletePermanentApp } = useApp();
-  const [showUndoRecycleWindow, setShowUndoRecycleWindow] =
-    useState<boolean>(false);
+  const { recycled } = useApp();
   const [closedTabs, setCloseTabs] = useState<closedTab[]>([]);
 
   const [clickedAppTitle, setClickedAppTitle] = useState<string | null>(null);
@@ -198,9 +196,6 @@ const Recycle = () => {
             {recycled && recycled.length > 0 ? (
               recycled.map((i) => (
                 <div
-                  onDoubleClick={() => {
-                    setShowUndoRecycleWindow(true);
-                  }}
                   key={i.id}
                   className={`flex flex-col items-center cursor-pointer select-none rounded-md`}
                   onMouseDown={() => {

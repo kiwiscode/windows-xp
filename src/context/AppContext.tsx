@@ -18,6 +18,8 @@ interface AppProviderProps {
   children: ReactNode;
 }
 
+type ActiveGame = "Gta Vice City" | "Cs 1.6" | "Max Payne" | null;
+
 interface AppContextType {
   recycled: DesktopApp[];
   setRecycled: React.Dispatch<React.SetStateAction<DesktopApp[]>>;
@@ -56,6 +58,8 @@ interface AppContextType {
   setFocusedAppId: React.Dispatch<React.SetStateAction<number | null>>;
   isDragging: number | null;
   setIsDragging: React.Dispatch<React.SetStateAction<number | null>>;
+  activeGame: ActiveGame;
+  setActiveGame: React.Dispatch<React.SetStateAction<ActiveGame>>;
 }
 
 const generate = () => {
@@ -99,6 +103,7 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     isMobile ? 7 : 2
   );
   const [isDragging, setIsDragging] = useState<number | null>(null);
+  const [activeGame, setActiveGame] = useState<ActiveGame>(null);
 
   const emptyBin = () => {
     setRecycled([]);
@@ -391,15 +396,6 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
     setIsNavbarTabClicked(data);
   };
 
-  console.log("modal action:", modalAction);
-  console.log("show open screen:", showOpenScreen);
-  console.log("show start screen:", showStartScreen);
-  console.log("show stand by screen:", showStandByScreen);
-  console.log("show switch user screen:", showSwitchUserScreen);
-
-  console.log("active app:", activeApp);
-  console.log("focused app id:", focusedAppId);
-
   return (
     <AppContext.Provider
       value={{
@@ -440,6 +436,8 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
         setFocusedAppId,
         isDragging,
         setIsDragging,
+        activeGame,
+        setActiveGame,
       }}
     >
       {children}

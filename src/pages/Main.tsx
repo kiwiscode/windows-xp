@@ -11,11 +11,11 @@ import OpenXpScreen from "../components/OpenXpScreen";
 import StartScreen from "../components/StartScreen";
 import StandByScreen from "../components/StandByScreen";
 import SwitchUserScreen from "../components/SwitchUserScreen";
+import GameComponent from "../components/Game";
 
 const Main = () => {
   const bgImages = ["/xp-bg-opt.jpg", "/xp-bg-opt2.jpg", "/xp-bg-opt3.jpg"];
 
-  const [bgIndex, setBgIndex] = useState<number>(0);
   const {
     recycled,
     setRecycled,
@@ -35,6 +35,8 @@ const Main = () => {
     showSwitchUserScreen,
     isDragging,
     setIsDragging,
+    activeGame,
+    setActiveGame,
   } = useApp();
 
   const [clickedAppId, setClickedAppId] = useState<number | null>(null);
@@ -179,11 +181,11 @@ const Main = () => {
     );
   }, [recycled]);
 
-  console.log("apps:", apps);
-
   return (
     <>
-      {showSwitchUserScreen ? (
+      {activeGame ? (
+        <GameComponent game={activeGame} />
+      ) : showSwitchUserScreen ? (
         <SwitchUserScreen />
       ) : showStandByScreen ? (
         <StandByScreen />
@@ -197,7 +199,7 @@ const Main = () => {
         <div
           className="h-full overflow-hidden relative bg-cover bg-no-repeat bg-fixed"
           style={{
-            backgroundImage: `url(${bgImages[bgIndex]}) `,
+            backgroundImage: `url(${bgImages[0]}) `,
           }}
         >
           {showPowerModal && (
@@ -222,7 +224,20 @@ const Main = () => {
                   <div
                     onDoubleClick={() => {
                       setClickedAppId(null);
-                      addTab(app.title);
+                      if (app.isGame) {
+                        switch (app.title) {
+                          case "Gta Vice City":
+                          case "Cs 1.6":
+                          case "Max Payne":
+                            setActiveGame(app.title);
+                            break;
+
+                          default:
+                            break;
+                        }
+                      } else {
+                        addTab(app.title);
+                      }
                     }}
                     key={app.id}
                     className={`absolute flex flex-col items-center cursor-pointer select-none rounded-md w-[100px]`}

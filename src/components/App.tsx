@@ -27,7 +27,6 @@ const OpenedApp = (props: AppType) => {
   const { width } = useWindowDimensions();
   const isMobile = width <= 768;
   const [showWinamp, setShowMinamp] = useState<boolean>(false);
-  const [isMinimizing, setIsMinimizing] = useState<boolean>(false);
   const tabRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = (e: React.MouseEvent, id: number) => {
@@ -101,8 +100,6 @@ const OpenedApp = (props: AppType) => {
     };
   }, [activeApp]);
 
-  console.log("props:", props);
-
   return (
     <div
       ref={tabRef}
@@ -160,10 +157,8 @@ const OpenedApp = (props: AppType) => {
             : "translate(-50%, -50%)",
 
         zIndex: props.zIndex,
-        // transition: !isDragging || isMinimizing ? "all 0.3s" : "none",
         position: "absolute",
         padding: !props.showHeader ? 0 : "3px",
-        // backgroundColor: activeApp === props.title ? "#0831d9" : "#6582f5",
         backgroundColor: focusedAppId === props.id ? "#0831d9" : "#6582f5",
         display: !props.minimized ? "flex" : "none",
         flexDirection: "column",
@@ -197,9 +192,6 @@ const OpenedApp = (props: AppType) => {
   `}
         style={{
           background:
-            // activeApp === props.title
-            //   ? "linear-gradient(to bottom,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)"
-            //   : "linear-gradient(to bottom, #7697e7 0%,#7e9ee3 3%,#94afe8 6%,#97b4e9 8%,#82a5e4 14%,#7c9fe2 17%,#7996de 25%,#7b99e1 56%,#82a9e9 81%,#80a5e7 89%,#7b96e1 94%,#7a93df 97%,#abbae3 100%)",
             focusedAppId === props.id
               ? "linear-gradient(to bottom,#0058ee 0%,#3593ff 4%,#288eff 6%,#127dff 8%,#036ffc 10%,#0262ee 14%,#0057e5 20%,#0054e3 24%,#0055eb 56%,#005bf5 66%,#026afe 76%,#0062ef 86%,#0052d6 92%,#0040ab 94%,#003092 100%)"
               : "linear-gradient(to bottom, #7697e7 0%,#7e9ee3 3%,#94afe8 6%,#97b4e9 8%,#82a5e4 14%,#7c9fe2 17%,#7996de 25%,#7b99e1 56%,#82a9e9 81%,#80a5e7 89%,#7b96e1 94%,#7a93df 97%,#abbae3 100%)",
@@ -254,7 +246,6 @@ const OpenedApp = (props: AppType) => {
               {!props.prompt && (
                 <div
                   onClick={() => {
-                    setIsMinimizing(true);
                     minimizeTab(props.id);
                   }}
                   style={{
