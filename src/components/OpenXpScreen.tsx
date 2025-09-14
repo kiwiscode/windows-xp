@@ -12,13 +12,19 @@ const options = [
 ];
 
 const OpenXpScreen = () => {
-  const { setShowOpenScreen, setShowStartScreen, setModalAction } = useApp();
+  const {
+    setShowOpenScreen,
+    setShowStartScreen,
+    setModalAction,
+    setOpenedApps,
+  } = useApp();
   const [dots, setDots] = useState<string>(".");
   const [finished, setFinished] = useState<boolean>(false);
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const { width } = useWindowDimensions();
 
   useEffect(() => {
+    setOpenedApps([]);
     setModalAction(null);
     const interval = setInterval(() => {
       setDots((prev) => (prev.length < 3 ? prev + "." : "."));
@@ -114,32 +120,31 @@ const OpenXpScreen = () => {
             IDE Channel 1 Master : WDC WD3200AAJS-00RY10 12.01B01
             <br />
             <br />
-            {!finished ? (
+            {!finished && (
               <>
                 Detecting IDE drives {dots}
                 <br />
               </>
-            ) : (
-              <>
-                Primary Master: ST3160815AS 160GB <br />
-                <br />
-                Windows Advanced Options Menu <br />
-                Please select an option: <br /> <br />
-                <div className="text-left select-auto flex flex-col items-start md:select-none md:pointer-events-none max-md:pointer-events-auto">
-                  {options.map((opt, idx) => (
-                    <div
-                      onClick={() => handleTouch(idx)}
-                      key={idx}
-                      className={`pl-[70px] py-1 pr-3 inline-block my-1 cursor-default ${
-                        selectedIndex === idx ? "bg-white text-black" : ""
-                      }`}
-                    >
-                      {opt}
-                    </div>
-                  ))}
-                </div>
-              </>
             )}
+            <div className={`${finished ? "opacity-100" : "opacity-0"}`}>
+              Primary Master: ST3160815AS 160GB <br />
+              <br />
+              Windows Advanced Options Menu <br />
+              Please select an option: <br /> <br />
+              <div className="text-left select-auto flex flex-col items-start md:select-none md:pointer-events-none max-md:pointer-events-auto">
+                {options.map((opt, idx) => (
+                  <div
+                    onClick={() => handleTouch(idx)}
+                    key={idx}
+                    className={`pl-[70px] py-1 pr-3 inline-block my-1 cursor-default ${
+                      selectedIndex === idx ? "bg-white text-black" : ""
+                    }`}
+                  >
+                    {opt}
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 
