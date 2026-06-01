@@ -7,6 +7,7 @@ import Error from "./Error";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import Paint from "./Paint";
 //
+//
 const unfocusedAdjustment = "brightness(1.05)";
 const OpenedApp = (props: AppType) => {
   const {
