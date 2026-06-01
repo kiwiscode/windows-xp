@@ -6,7 +6,7 @@ import Winamp from "./Winamp";
 import Error from "./Error";
 import useWindowDimensions from "../hooks/useWindowDimensions";
 import Paint from "./Paint";
-
+//
 const unfocusedAdjustment = "brightness(1.05)";
 const OpenedApp = (props: AppType) => {
   const {
@@ -64,7 +64,7 @@ const OpenedApp = (props: AppType) => {
             };
           }
           return t;
-        })
+        }),
       );
     };
 
@@ -113,48 +113,48 @@ const OpenedApp = (props: AppType) => {
           props.title === "error" && isMobile
             ? props.x
             : !props.showHeader
-            ? 0
-            : props.maximize || isMobile
-            ? 0
-            : props.x,
+              ? 0
+              : props.maximize || isMobile
+                ? 0
+                : props.x,
 
         top:
           props.title === "error" && isMobile
             ? props.y
             : !props.showHeader
-            ? 0
-            : props.maximize || isMobile
-            ? 0
-            : props.y,
+              ? 0
+              : props.maximize || isMobile
+                ? 0
+                : props.y,
 
         width:
           props.title === "error" && !isMobile
             ? "380px"
             : props.title === "error" && isMobile
-            ? "290px"
-            : !props.showHeader
-            ? "auto"
-            : props.maximize || isMobile
-            ? window.innerWidth
-            : "700px",
+              ? "290px"
+              : !props.showHeader
+                ? "auto"
+                : props.maximize || isMobile
+                  ? window.innerWidth
+                  : "700px",
 
         height:
           props.title === "error"
             ? "auto"
             : !props.showHeader
-            ? "auto"
-            : props.maximize || isMobile
-            ? window.innerHeight - 30
-            : "500px",
+              ? "auto"
+              : props.maximize || isMobile
+                ? window.innerHeight - 30
+                : "500px",
 
         transform:
           props.title === "error" && isMobile
             ? "translate(-50%, -50%)"
             : !props.showHeader
-            ? "translate(0px, 0px)"
-            : props.maximize || isMobile
-            ? undefined
-            : "translate(-50%, -50%)",
+              ? "translate(0px, 0px)"
+              : props.maximize || isMobile
+                ? undefined
+                : "translate(-50%, -50%)",
 
         zIndex: props.zIndex,
         position: "absolute",
